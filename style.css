@@ -609,3 +609,20 @@ img {
         width: 90%;
     }
 }
+@media (max-width: 768px) {
+    /* মেনুবার যাতে এক লাইনে না থাকে */
+    .navbar {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    nav ul {
+        flex-direction: column;
+        margin-top: 15px;
+        gap: 10px;
+    }
+
+    nav ul li {
+        margin-left: 0;
+    }
+}
