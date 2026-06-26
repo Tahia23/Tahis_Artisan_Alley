@@ -588,3 +588,9 @@ footer {
         margin-top: 20px;
     }
 }
+.cart-table {
+    width: 100%;
+    display: block; /* টেবিল যেন ব্লক এলিমেন্ট হিসেবে কাজ করে */
+    overflow-x: auto; /* টেবিল বড় হলে যেন শুধু টেবিলটা স্ক্রল করা যায় */
+    white-space: nowrap; /* টেক্সট ভেঙে যেন বাইরে না যায় */
+}
