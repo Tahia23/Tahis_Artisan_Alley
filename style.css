@@ -573,3 +573,18 @@ footer {
     font-weight: 500;
     letter-spacing: 0.5px;
 }
+@media (max-width: 768px) {
+    .cart-container {
+        flex-direction: column; /* টেবিল এবং সামারি নিচে নিচে বসবে */
+        width: 100%;
+        padding: 10px;
+    }
+    .cart-table {
+        width: 100%; /* টেবিল পুরো স্ক্রিন নিবে */
+        overflow-x: auto; /* যদি টেবিল বড় হয় তবে স্ক্রল করা যাবে */
+    }
+    .cart-summary {
+        width: 100%; /* সামারি পুরো স্ক্রিন নিবে */
+        margin-top: 20px;
+    }
+}
