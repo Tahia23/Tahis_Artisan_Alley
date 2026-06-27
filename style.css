@@ -686,3 +686,56 @@ footer a img:hover {
     display: block;
     transition: opacity 0.5s ease-in-out;
 }
+/* Layout thik rakhar jonno */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body { background-color: #f4f3ef; color: #111a14; }
+
+/* Navbar-er jonno */
+.navbar {
+    background-color: #001f3f;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+
+/* Menu items pasha-pashi thakbe, break hobe na */
+.nav-menu {
+    display: flex !important;
+    list-style: none;
+    flex-direction: row !important; /* Pasha-pashi */
+    gap: 20px;
+}
+
+.nav-links {
+    display: flex !important;
+    flex-direction: row !important;
+}
+
+/* Category grid pasha-pashi 4ti */
+.category-grid {
+    display: flex !important;
+    justify-content: center;
+    flex-direction: row !important; /* Pasha-pashi */
+    flex-wrap: nowrap !important; /* Niche nambe na */
+    gap: 15px;
+}
+
+.category-card {
+    width: 200px !important; /* Fixed width dile pashapashi thakbe */
+    flex: 0 0 auto;
+}
+
+/* Mobile-er jonno kono extra style rakha hoyni */
+@media (max-width: 768px) {
+    .menu-toggle { display: none !important; }
+    .nav-links { display: flex !important; }
+    .navbar { flex-direction: row !important; }
+}
