@@ -733,9 +733,27 @@ body { background-color: #f4f3ef; color: #111a14; }
     flex: 0 0 auto;
 }
 
-/* Mobile-er jonno kono extra style rakha hoyni */
+/* পুরো স্টাইলশিট রিসেট করে এটি বসান */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+body { background-color: #f4f3ef; }
+
+/* Navbar - সব সময় পাশাপাশি */
+.navbar { display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 15px 5%; background-color: #001f3f; color: white; }
+.nav-menu { display: flex !important; flex-direction: row !important; list-style: none; gap: 20px; }
+.nav-menu li { display: block; }
+.menu-toggle { display: none !important; } /* হ্যামবার্গার মেনু লুকিয়ে দেওয়া হলো */
+
+/* Category Grid - সব সময় পাশাপাশি ৪টি */
+.category-grid { 
+    display: flex !important; 
+    flex-direction: row !important; 
+    justify-content: center !important; 
+    gap: 20px !important; 
+    flex-wrap: nowrap !important; /* ভাঙবে না */
+}
+.category-card { width: 200px !important; flex: 0 0 auto !important; }
+
+/* মোবাইল রেসপন্সিভনেস পুরোপুরি বন্ধ */
 @media (max-width: 768px) {
-    .menu-toggle { display: none !important; }
-    .nav-links { display: flex !important; }
-    .navbar { flex-direction: row !important; }
+    /* এখানে কিছু নেই, তাই পিসির ডিজাইনই বজায় থাকবে */
 }
