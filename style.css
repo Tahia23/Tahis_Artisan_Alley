@@ -23,9 +23,8 @@ header {
 
 .navbar {
     display: flex;
-    justify-content: space-between; /* Eita thakle sob thikmoto jaygay boshbe */
+    justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
 }
 
 .logo-area {
@@ -705,13 +704,14 @@ footer a img:hover {
     cursor: pointer;
     border-radius: 5px;
 }
+/* স্লাইডারের জন্য নতুন স্টাইল - আগেরটি সরিয়ে এটি দিন */
 .slider-section {
     padding: 40px 0;
     text-align: center;
 }
 
 .slider-container {
-    width: 35% !important; /* এটা ছোট করলে ব্যানারটি সরু হবে */
+    width: 40px; /* নির্দিষ্ট প্রস্থ */
     margin: 20px auto;
     border: 5px solid #fff;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
@@ -721,8 +721,8 @@ footer a img:hover {
 
 .slide {
     width: 100%;
-    height: 800px !important; /* উচ্চতা কমাবে, স্লাইডার অনেক চিকন হয়ে যাবে */
-    object-fit: cover;
+    height: 250px; /* উচ্চতা */
+    object-fit: cover; /* ছবিটি যেন বিকৃত না হয় */
     display: block;
 }
 body { font-family: 'Poppins', sans-serif; }
@@ -761,75 +761,37 @@ body { font-family: 'Poppins', sans-serif; }
         flex-direction: column;
     }
 }
-/* --- মোবাইল ভিউ ফিক্স (পাশাপাশি রাখার জন্য) --- */
-@media screen and (max-width: 768px) {
-    /* ন্যাভবার পাশাপাশি রাখার জন্য */
-    .navbar, header {
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: space-between !important;
-        flex-wrap: nowrap !important;
-    }
-    
-    /* ক্যাটাগরি এবং প্রোডাক্ট পাশাপাশি রাখার জন্য */
-    .category-grid, .product-grid {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        justify-content: flex-start !important;
-        overflow-x: auto !important;
-        gap: 10px !important;
-    }
-
-    /* কার্ডের সাইজ ছোট করে দেওয়া যাতে পাশাপাশি ধরে */
-    .category-card, .product-card {
-        min-width: 140px !important;
-        flex: 0 0 auto !important;
-    }
-}
-/* ড্রপডাউন মেনু পজিশন ঠিক করা */
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-
+/* ড্রপডাউন কন্টেন্টের স্টাইল ঠিক করার জন্য */
 .dropdown-content {
-    display: none; /* ডিফল্ট অবস্থায় লুকিয়ে থাকবে */
-    position: absolute;
-    background-color: #ffffff;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-    z-index: 1000;
-    list-style: none;
-    padding: 0;
-    top: 100%; /* বাটন থেকে নিচে বসাবে */
-    left: 0;
+    background-color: #ffffff; /* ব্যাকগ্রাউন্ড সাদা */
+    border: 1px solid #ddd;   /* হালকা বর্ডার */
+    min-width: 150px;
 }
 
+/* ড্রপডাউন লিংকগুলোর টেক্সট কালার ঠিক করার জন্য */
 .dropdown-content li a {
-    color: #333 !important;
-    padding: 12px 16px;
+    color: #333 !important;   /* টেক্সট কালার কালো বা গাঢ় ধূসর */
+    padding: 10px;
     display: block;
     text-decoration: none;
 }
 
+/* মাউস হোভার করলে টেক্সট বা ব্যাকগ্রাউন্ড পরিবর্তনের জন্য */
 .dropdown-content li a:hover {
-    background-color: #f1f1f1;
+    background-color: #f4f4f4;
+}
+.slider-container {
+    width: 600px; /* এখান থেকে সাইজ নিয়ন্ত্রণ করুন */
+    margin: 20px auto;
+    border: 5px solid #fff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-/* মাউস নিলে ড্রপডাউন দেখাবে */
-.dropdown:hover .dropdown-content {
-    display: block !important;
-}
-
-/* অতিরিক্ত সুরক্ষা */
-.navbar {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    position: relative;
-}
-.search-container {
-    z-index: 9999 !important;
-    position: relative;
+.slide {
+    width: 100%;
+    height: 750px; /* আপনার পছন্দমতো উচ্চতা দিন */
+    object-fit: cover;
+    display: none; /* জাভাস্ক্রিপ্ট দিয়ে একটি করে দেখাবে */
 }
