@@ -594,6 +594,7 @@ footer {
     overflow-x: auto; /* টেবিল বড় হলে যেন শুধু টেবিলটা স্ক্রল করা যায় */
     white-space: nowrap; /* টেক্সট ভেঙে যেন বাইরে না যায় */
 }
+/* Navbar Styling */
 .navbar {
     background-color: #001f3f;
     padding: 15px 20px;
@@ -607,6 +608,15 @@ footer {
     color: white !important;
 }
 
+/* Search Bar */
+.search-container input {
+    padding: 8px;
+    border-radius: 4px;
+    border: none;
+    width: 200px;
+}
+
+/* Login Button */
 .login-btn {
     background-color: #ff5733;
     padding: 8px 15px;
@@ -615,6 +625,17 @@ footer {
     font-weight: bold;
 }
 
+/* Product Card Hover Effect */
+.product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+/* Modal Styling */
 .modal {
     display: none; 
     position: fixed; 
