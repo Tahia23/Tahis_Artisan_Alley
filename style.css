@@ -166,7 +166,7 @@ nav ul li a:hover::after {
 .category-grid, .product-grid {
     display: flex;
     justify-content: center;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     gap: 32px;
 }
 
@@ -544,17 +544,27 @@ img {
 .dropdown:hover .dropdown-content { display: block; }
 .dropdown-content li a { padding: 10px; display: block; color: black; text-decoration: none; }
 
-/* মোবাইল রেসপন্সিভনেস নিষ্ক্রিয় করা হয়েছে */
 @media (max-width: 768px) {
-    /* কোড খালি রাখা হয়েছে যাতে পিসির লেআউট ভেঙে না যায় */
+    .banner-container img { height: 250px; }
+    .banner-text h2 { font-size: 24px; }
+    .banner-text p { font-size: 14px; }
+    
+    .navbar { flex-direction: column; text-align: center; }
+    nav ul { flex-direction: column; margin-top: 15px; gap: 10px; }
+    nav ul li { margin-left: 0; }
+
+    .category-grid, .product-grid { flex-direction: column; align-items: center; }
+    .category-card, .product-card { width: 90%; }
+    
+    .footer-container { flex-direction: column; text-align: center; gap: 20px; }
+    .footer-contact { text-align: center; }
 }
 
 @media (max-width: 600px) {
-    /* কোড খালি রাখা হয়েছে */
+    .nav-menu { gap: 10px; font-size: 14px; }
 }
-
 footer {
-    background-color: #111a14 !important;
+    background-color: #111a14 !important; /* ব্ল্যাক কালার ঠিক করার জন্য */
     color: #ffffff !important;
     text-align: center;
     padding: 35px;
@@ -562,6 +572,36 @@ footer {
     font-size: 13px;
     font-weight: 500;
     letter-spacing: 0.5px;
+}
+@media (max-width: 768px) {
+    .cart-container {
+        flex-direction: column; /* টেবিল এবং সামারি নিচে নিচে বসবে */
+        width: 100%;
+        padding: 10px;
+    }
+    .cart-table {
+        width: 100%; /* টেবিল পুরো স্ক্রিন নিবে */
+        overflow-x: auto; /* যদি টেবিল বড় হয় তবে স্ক্রল করা যাবে */
+    }
+    .cart-summary {
+        width: 100%; /* সামারি পুরো স্ক্রিন নিবে */
+        margin-top: 20px;
+    }
+}
+.cart-table {
+    width: 100%;
+    display: block; /* টেবিল যেন ব্লক এলিমেন্ট হিসেবে কাজ করে */
+    overflow-x: auto; /* টেবিল বড় হলে যেন শুধু টেবিলটা স্ক্রল করা যায় */
+    white-space: nowrap; /* টেক্সট ভেঙে যেন বাইরে না যায় */
+}
+/* Navbar Styling */
+.navbar {
+    background-color: #001f3f;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
 }
 
 /* Navbar Styling */
@@ -637,7 +677,7 @@ footer a img:hover {
     width: 300px;
     border-radius: 8px;
     position: relative;
-    color: black;
+    color: black; /* যাতে মডালের ভেতরের লেখা স্পষ্ট দেখা যায় */
 }
 
 .close-btn {
@@ -664,15 +704,13 @@ footer a img:hover {
     cursor: pointer;
     border-radius: 5px;
 }
-
-/* স্লাইডারের স্টাইল */
 .slider-section {
     padding: 40px 0;
     text-align: center;
 }
 
 .slider-container {
-    width: 70%;
+    width: 35% !important; /* এটা ছোট করলে ব্যানারটি সরু হবে */
     margin: 20px auto;
     border: 5px solid #fff;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
@@ -682,78 +720,69 @@ footer a img:hover {
 
 .slide {
     width: 100%;
-    height: auto;
+    height: 800px !important; /* উচ্চতা কমাবে, স্লাইডার অনেক চিকন হয়ে যাবে */
+    object-fit: cover;
     display: block;
-    transition: opacity 0.5s ease-in-out;
 }
-/* Layout thik rakhar jonno */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', sans-serif;
-}
+body { font-family: 'Poppins', sans-serif; }
 
-body { background-color: #f4f3ef; color: #111a14; }
+/* Mobile Menu */
+.menu-toggle { display: none; cursor: pointer; }
+.bar { display: block; width: 25px; height: 3px; background: white; margin: 5px auto; }
 
-/* Navbar-er jonno */
-.navbar {
-    background-color: #001f3f;
-    padding: 15px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: white;
-}
-
-/* Menu items pasha-pashi thakbe, break hobe na */
-.nav-menu {
-    display: flex !important;
-    list-style: none;
-    flex-direction: row !important; /* Pasha-pashi */
-    gap: 20px;
-}
-
-.nav-links {
-    display: flex !important;
-    flex-direction: row !important;
-}
-
-/* Category grid pasha-pashi 4ti */
-.category-grid {
-    display: flex !important;
-    justify-content: center;
-    flex-direction: row !important; /* Pasha-pashi */
-    flex-wrap: nowrap !important; /* Niche nambe na */
-    gap: 15px;
-}
-
-.category-card {
-    width: 200px !important; /* Fixed width dile pashapashi thakbe */
-    flex: 0 0 auto;
-}
-
-/* পুরো স্টাইলশিট রিসেট করে এটি বসান */
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-body { background-color: #f4f3ef; }
-
-/* Navbar - সব সময় পাশাপাশি */
-.navbar { display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 15px 5%; background-color: #001f3f; color: white; }
-.nav-menu { display: flex !important; flex-direction: row !important; list-style: none; gap: 20px; }
-.nav-menu li { display: block; }
-.menu-toggle { display: none !important; } /* হ্যামবার্গার মেনু লুকিয়ে দেওয়া হলো */
-
-/* Category Grid - সব সময় পাশাপাশি ৪টি */
-.category-grid { 
-    display: flex !important; 
-    flex-direction: row !important; 
-    justify-content: center !important; 
-    gap: 20px !important; 
-    flex-wrap: nowrap !important; /* ভাঙবে না */
-}
-.category-card { width: 200px !important; flex: 0 0 auto !important; }
-
-/* মোবাইল রেসপন্সিভনেস পুরোপুরি বন্ধ */
 @media (max-width: 768px) {
-    /* এখানে কিছু নেই, তাই পিসির ডিজাইনই বজায় থাকবে */
+    .menu-toggle { display: block; }
+    .nav-links { display: none; width: 100%; }
+    .nav-links.active { display: block; }
+}
+/* এটি মোবাইল মেনুকে ঠিক করবে */
+.nav-links {
+    display: flex;
+}
+
+.menu-toggle {
+    display: none;
+    cursor: pointer;
+    margin: 10px;
+}
+
+@media (max-width: 768px) {
+    .menu-toggle { display: block; }
+    .nav-links {
+        display: none; /* মোবাইলে মেনু লুকিয়ে রাখবে */
+        flex-direction: column;
+        width: 100%;
+    }
+    .nav-links.active {
+        display: flex; /* বাটন ক্লিক করলে মেনু দেখাবে */
+    }
+    .navbar {
+        flex-direction: column;
+    }
+}
+/* --- মোবাইল ভিউ ফিক্স (পাশাপাশি রাখার জন্য) --- */
+@media screen and (max-width: 768px) {
+    /* ন্যাভবার পাশাপাশি রাখার জন্য */
+    .navbar, header {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        flex-wrap: nowrap !important;
+    }
+    
+    /* ক্যাটাগরি এবং প্রোডাক্ট পাশাপাশি রাখার জন্য */
+    .category-grid, .product-grid {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        justify-content: flex-start !important;
+        overflow-x: auto !important;
+        gap: 10px !important;
+    }
+
+    /* কার্ডের সাইজ ছোট করে দেওয়া যাতে পাশাপাশি ধরে */
+    .category-card, .product-card {
+        min-width: 140px !important;
+        flex: 0 0 auto !important;
+    }
 }
