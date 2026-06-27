@@ -10,39 +10,39 @@
 <body>
 
     <header>
-        <div class="navbar">
-            <div class="logo-area">
-                <img src="images/logo.png" alt="Logo" class="logo">
-                <h1>Tahi's Artisan Alley</h1>
-            </div>
-            
-            <div class="menu-toggle" id="mobile-menu">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </div>
-
-            <div class="search-container">
-                <input type="text" placeholder="Search products...">
-            </div>
-
-            <nav class="nav-links">
-                <ul class="nav-menu">
-                    <li><a href="index.html">Home</a></li>
-                    <li class="dropdown">
-                        <a href="javascript:void(0)">Categories</a>
-                        <ul class="dropdown-content">
-                            <li><a href="pages/skin-care.html">Skin Care</a></li>
-                            <li><a href="pages/bags.html">Bags</a></li>
-                            <li><a href="pages/cotton-dresses.html">Cotton Dresses</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="pages/cart.html">Cart 🛍️</a></li>
-                    <li><a href="javascript:void(0)" id="loginBtn" class="login-btn">Login</a></li>
-                </ul>
-            </nav>
+    <div class="navbar">
+        <div class="logo-area">
+            <img src="images/logo.png" alt="Logo" class="logo">
+            <h1>Tahi's Artisan Alley</h1>
         </div>
-    </header>
+        
+        <div class="search-container">
+            <input type="text" placeholder="Search products...">
+        </div>
+
+        <nav class="nav-links">
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li class="dropdown">
+                    <a href="javascript:void(0)">Categories</a>
+                    <ul class="dropdown-content">
+                        <li><a href="pages/skin-care.html">Skin Care</a></li>
+                        <li><a href="pages/bags.html">Bags</a></li>
+                        <li><a href="pages/cotton-dresses.html">Cotton Dresses</a></li>
+                    </ul>
+                </li>
+                <li><a href="pages/cart.html">Cart 🛍️</a></li>
+                <li><a href="javascript:void(0)" id="loginBtn" class="login-btn">Login</a></li>
+            </ul>
+        </nav>
+
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+    </div>
+</header>
 
     <div id="loginModal" class="modal">
         <div class="modal-content">
@@ -104,7 +104,6 @@
         </div>
     </section>
 
-    <!-- Added back Featured Products Section -->
     <section class="product-section">
         <h2>Featured Products</h2>
         <div class="product-grid">
@@ -169,5 +168,23 @@
         }
         setInterval(showSlide, 3000);
     </script>
+   .<script>
+    document.querySelector('.search-container input').addEventListener('keyup', function(event) {
+        let searchQuery = event.target.value.toLowerCase();
+        // এখন এটি সব প্রোডাক্ট কার্ড ধরবে
+        let products = document.querySelectorAll('.product-card');
+        
+        products.forEach(product => {
+            let productName = product.querySelector('h3').innerText.toLowerCase();
+            // যদি সার্চ বক্স খালি থাকে তবে সব দেখাবে, নাহলে ফিল্টার করবে
+            if (productName.includes(searchQuery)) {
+                product.style.display = "block";
+            } else {
+                product.style.display = "none";
+            }
+        });
+    });
+</script>
+
 </body>
 </html>
