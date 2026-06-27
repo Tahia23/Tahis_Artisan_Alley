@@ -604,16 +604,27 @@ footer {
     color: white;
 }
 
+/* Navbar Styling */
+.navbar {
+    background-color: #001f3f;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+
 .navbar a, .navbar h1 {
     color: white !important;
 }
 
-/* Search Bar */
+/* Search Bar Design */
 .search-container input {
-    padding: 8px;
-    border-radius: 4px;
+    padding: 8px 12px;
+    border-radius: 20px;
     border: none;
-    width: 200px;
+    width: 250px;
+    outline: none;
 }
 
 /* Login Button */
@@ -623,6 +634,7 @@ footer {
     border-radius: 5px;
     text-decoration: none;
     font-weight: bold;
+    color: white !important;
 }
 
 /* Product Card Hover Effect */
@@ -633,6 +645,16 @@ footer {
 .product-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+/* Footer Social Icons Hover */
+footer a img {
+    transition: transform 0.3s ease;
+    margin: 0 5px;
+}
+
+footer a img:hover {
+    transform: scale(1.2);
 }
 
 /* Modal Styling */
@@ -655,6 +677,7 @@ footer {
     width: 300px;
     border-radius: 8px;
     position: relative;
+    color: black; /* যাতে মডালের ভেতরের লেখা স্পষ্ট দেখা যায় */
 }
 
 .close-btn {
@@ -679,4 +702,5 @@ footer {
     padding: 10px;
     border: none;
     cursor: pointer;
+    border-radius: 5px;
 }
