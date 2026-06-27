@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tahi's Artisan Alley</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,11 +15,18 @@
                 <img src="images/logo.png" alt="Logo" class="logo">
                 <h1>Tahi's Artisan Alley</h1>
             </div>
-            <!-- Search Bar Added -->
+            
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+
             <div class="search-container">
                 <input type="text" placeholder="Search products...">
             </div>
-            <nav>
+
+            <nav class="nav-links">
                 <ul class="nav-menu">
                     <li><a href="index.html">Home</a></li>
                     <li class="dropdown">
@@ -51,50 +59,52 @@
     </div>
 
     <section class="welcome-section">
-    <div class="banner-container">
-        <img src="images/h-banner.jpg" alt="Home Banner">
-        <div class="banner-text">
-            <h2>Welcome to Tahi's Artisan Alley</h2>
-            <p>Your one-stop shop for premium cotton dresses, authentic skincare, varsity bags, and beautiful accessories.</p>
-            <a href="#categories" class="btn">Explore Shop</a>
+        <div class="banner-container">
+            <img src="images/h-banner.jpg" alt="Home Banner">
+            <div class="banner-text">
+                <h2>Welcome to Tahi's Artisan Alley</h2>
+                <p>Your one-stop shop for premium cotton dresses, authentic skincare, varsity bags, and beautiful accessories.</p>
+                <a href="#categories" class="btn">Explore Shop</a>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
+
+    <section class="slider-section" style="padding: 40px 0;">
+        <h2 style="text-align:center;">Our Gallery</h2>
+        <div class="slider-container" style="width: 70%; margin: 20px auto; overflow: hidden;">
+            <img src="images/s1.jpg" class="slide" style="width: 100%; height: auto; display: block;">
+            <img src="images/bag-product.jpg" class="slide" style="width: 100%; height: auto; display: none;">
+            <img src="images/d1.jpg" class="slide" style="width: 100%; height: auto; display: none;">
+        </div>
+    </section>
 
     <section id="categories" class="category-section">
         <h3>Our Categories</h3>
         <div class="category-grid">
             <div class="category-card">
-                <div class="profile-pic-wrapper">
-                    <div class="profile-pic" style="background-image: url('images/cotton-dresses-1.jpg');"></div>
-                </div>
+                <div class="profile-pic-wrapper"><div class="profile-pic" style="background-image: url('images/cotton-dresses-1.jpg');"></div></div>
                 <h4>Cotton Ready Dress</h4>
                 <a href="pages/cotton-dresses.html" class="shop-btn">View All</a>
             </div>
             <div class="category-card">
-                <div class="profile-pic-wrapper">
-                    <div class="profile-pic" style="background-image: url('images/skin-care-1.jpg');"></div>
-                </div>
+                <div class="profile-pic-wrapper"><div class="profile-pic" style="background-image: url('images/skin-care-1.jpg');"></div></div>
                 <h4>Skin Care</h4>
                 <a href="pages/skin-care.html" class="shop-btn">View All</a>
             </div>
             <div class="category-card">
-                <div class="profile-pic-wrapper">
-                    <div class="profile-pic" style="background-image: url('images/bag-category.jpg');"></div>
-                </div>
+                <div class="profile-pic-wrapper"><div class="profile-pic" style="background-image: url('images/bag-category.jpg');"></div></div>
                 <h4>Bags</h4>
                 <a href="pages/bags.html" class="shop-btn">View All</a>
             </div>
             <div class="category-card">
-                <div class="profile-pic-wrapper">
-                    <div class="profile-pic" style="background-image: url('images/accessories-1.jpg');"></div>
-                </div>
+                <div class="profile-pic-wrapper"><div class="profile-pic" style="background-image: url('images/accessories-1.jpg');"></div></div>
                 <h4>Accessories</h4>
                 <a href="pages/accessories.html" class="shop-btn">View All</a>
             </div>
         </div>
     </section>
 
+    <!-- Added back Featured Products Section -->
     <section class="product-section">
         <h2>Featured Products</h2>
         <div class="product-grid">
@@ -132,36 +142,32 @@
                 <p>Phone: +880 1306437417</p>
                 <p>Email: tahiyahshima023@gmail.com</p>
                 <p>Follow us: 
-                    <a href="https://www.facebook.com/share/199NUirHoD/" target="_blank" style="margin-right: 15px;">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" alt="Facebook" style="width: 30px; vertical-align: middle;">
-                    </a>
-                    <a href="https://www.instagram.com/_tahis_artisan_alley?igsh=MW94OW96cGZlOHphdw==" target="_blank">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram" style="width: 30px; vertical-align: middle;">
-                    </a>
+                    <a href="https://www.facebook.com/share/199NUirHoD/" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" alt="FB" style="width: 30px;"></a>
+                    <a href="https://www.instagram.com/_tahis_artisan_alley?igsh=MW94OW96cGZlOHphdw==" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="IG" style="width: 30px;"></a>
                 </p>
-            </div>
-            <div class="footer-copyright">
-                <p>&copy; 2026 Tahi's Artisan Alley. All Rights Reserved.</p>
             </div>
         </div>
     </footer>
 
     <script>
+        const menu = document.getElementById('mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+        menu.addEventListener('click', () => { navLinks.classList.toggle('active'); });
+
         const modal = document.getElementById("loginModal");
         const btn = document.getElementById("loginBtn");
         const span = document.getElementsByClassName("close-btn")[0];
-
-        btn.onclick = function() {
-            modal.style.display = "block";
+        btn.onclick = function() { modal.style.display = "block"; }
+        span.onclick = function() { modal.style.display = "none"; }
+        
+        let slides = document.querySelectorAll(".slide");
+        let currentSlide = 0;
+        function showSlide() {
+            slides.forEach(s => s.style.display = "none");
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].style.display = "block";
         }
-        span.onclick = function() {
-            modal.style.display = "none";
-        }
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
+        setInterval(showSlide, 3000);
     </script>
 </body>
 </html>
