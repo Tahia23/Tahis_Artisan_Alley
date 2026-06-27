@@ -736,3 +736,28 @@ body { font-family: 'Poppins', sans-serif; }
     .nav-links { display: none; width: 100%; }
     .nav-links.active { display: block; }
 }
+/* এটি মোবাইল মেনুকে ঠিক করবে */
+.nav-links {
+    display: flex;
+}
+
+.menu-toggle {
+    display: none;
+    cursor: pointer;
+    margin: 10px;
+}
+
+@media (max-width: 768px) {
+    .menu-toggle { display: block; }
+    .nav-links {
+        display: none; /* মোবাইলে মেনু লুকিয়ে রাখবে */
+        flex-direction: column;
+        width: 100%;
+    }
+    .nav-links.active {
+        display: flex; /* বাটন ক্লিক করলে মেনু দেখাবে */
+    }
+    .navbar {
+        flex-direction: column;
+    }
+}
