@@ -874,7 +874,7 @@ body { font-family: 'Poppins', sans-serif; }
   }
   
   .marquee-text span {
-    font-size: 1.5rem !important;
+    font-size: 1rem !important;
     white-space: nowrap !important;
     display: flex !important;
   }
