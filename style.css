@@ -866,11 +866,16 @@ body { font-family: 'Poppins', sans-serif; }
   }
 }
 @media (max-width: 768px) {
+  /* আপনার আগের কোড */
   .marquee-text {
-    /* ফোনেও যেন লেখাটি পাশাপাশি থাকে */
     display: flex !important;
     white-space: nowrap !important;
-    /* প্রয়োজনে ফন্ট সাইজ একটু কমিয়ে নিন যাতে মোবাইলে ঠিকমতো ধরে */
-    font-size: 1.5rem !important; 
+  }
+  
+  /* এই নতুন অংশটুকু যোগ করুন */
+  .marquee-text span {
+    font-size: 1.5rem !important; /* মোবাইলের জন্য ফন্ট সাইজ ছোট করে দিচ্ছি */
+    white-space: nowrap !important;
+    display: flex !important;
   }
 }
