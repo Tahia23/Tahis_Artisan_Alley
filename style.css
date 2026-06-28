@@ -865,3 +865,12 @@ body { font-family: 'Poppins', sans-serif; }
     transform: translateX(-100%); 
   }
 }
+@media (max-width: 768px) {
+  .marquee-text {
+    /* ফোনেও যেন লেখাটি পাশাপাশি থাকে */
+    display: flex !important;
+    white-space: nowrap !important;
+    /* প্রয়োজনে ফন্ট সাইজ একটু কমিয়ে নিন যাতে মোবাইলে ঠিকমতো ধরে */
+    font-size: 1.5rem !important; 
+  }
+}
