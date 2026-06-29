@@ -36,16 +36,16 @@ header {
 }
 
 .logo {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    margin-right: 12px;
+    width: 50px;
+    height: 50px;
+    border-radius: 60%;
+    margin-right: 18px;
     border: 1.5px solid #e598a4ee;
     object-fit: cover;
 }
 
 .logo-area h1 {
-    font-size: 20px;
+    font-size: 30px;
     color: #111a14;
     font-weight: 700;
     letter-spacing: -0.3px;
@@ -98,7 +98,7 @@ nav ul li a:hover::after {
 }
 
 .welcome-content {
-    max-width: 820px;
+    max-width: 800px;
     margin: 0 auto;
 }
 
@@ -174,7 +174,7 @@ nav ul li a:hover::after {
 }
 
 .category-card {
-    background: #ffffff;
+    background: #fff5f5;
     border: 1px solid #e2eae4;
     border-radius: 0px;
     padding: 45px 30px;
@@ -186,7 +186,7 @@ nav ul li a:hover::after {
 
 .category-card:hover {
     transform: translateY(-6px);
-    border-color: #e598a4;
+    border-color: #98e5ce;
     box-shadow: 0 12px 30px rgba(216, 74, 104, 0.12);
 }
 
@@ -786,7 +786,7 @@ body { font-family: 'Poppins', sans-serif; }
 .slider-container {
     width: 600px; /* এখান থেকে সাইজ নিয়ন্ত্রণ করুন */
     margin: 20px auto;
-    border: 5px solid #fff;
+    border: 5px solid #e0fae8;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     border-radius: 10px;
     overflow: hidden;
