@@ -34,8 +34,10 @@
         </div>
     </section>
 
+    <!-- এখানে সব প্রোডাক্ট থাকবে -->
     <section class="product-section">
-        <div class="product-grid">
+        <div class="product-grid" id="product-container">
+            <!-- পুরনো প্রোডাক্টগুলো -->
             <div class="product-card">
                 <div class="product-image-box" style="background-image: url('../images/skincare-product.jpg');"></div>
                 <div class="product-info">
@@ -47,7 +49,7 @@
             <div class="product-card">
                 <div class="product-image-box" style="background-image: url('../images/s1.jpg');"></div>
                 <div class="product-info">
-                    <h3>Dot & Key SPF 50+ sunscreen  80ml</h3>
+                    <h3>Dot & Key SPF 50+ sunscreen 80ml</h3>
                     <div class="price">BDT 999</div>
                     <button class="add-to-cart-btn">Add To Cart</button>
                 </div>
@@ -59,22 +61,24 @@
                     <div class="price">BDT 550</div>
                     <button class="add-to-cart-btn">Add To Cart</button>
                 </div>
-                </div>
-                 <div class="product-card">
+            </div>
+            <div class="product-card">
                 <div class="product-image-box" style="background-image: url('../images/s2.jpg');"></div>
                 <div class="product-info">
-                    <h3>CERAVE  Moisturizing Cream 56ml</h3>
+                    <h3>CERAVE Moisturizing Cream 56ml</h3>
                     <div class="price">BDT 1,350</div>
                     <button class="add-to-cart-btn">Add To Cart</button>
                 </div>
             </div>
-             <div class="product-card">
+            <div class="product-card">
                 <div class="product-image-box" style="background-image: url('../images/s4.jpg');"></div>
                 <div class="product-info">
                     <h3>AXIS-Y Dark spot correcting Serum</h3>
                     <div class="price">BDT 1,300</div>
                     <button class="add-to-cart-btn">Add To Cart</button>
                 </div>
+            </div>
+            <!-- ডাটাবেসের নতুন প্রোডাক্টগুলো এখানে অটোমেটিক যোগ হবে -->
         </div>
     </section>
 
@@ -90,6 +94,34 @@
             </div>
         </div>
     </footer>
+
+    <script>
+    async function fetchProducts() {
+        try {
+            const res = await fetch('http://localhost:3000/get-products');
+            const data = await res.json();
+            console.log("Data fetched:", data); // কনসোলে ডাটা দেখালে বুঝতে পারবে সাকসেস
+            const container = document.getElementById('product-container');
+            
+            data.forEach(product => {
+                if (product.category === 'skincare') {
+                    container.innerHTML += `
+                        <div class="product-card">
+                            <div class="product-image-box" style="background-image: url('../images/${product.image}');"></div>
+                            <div class="product-info">
+                                <h3>${product.name}</h3>
+                                <div class="price">BDT ${product.price}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+        } catch (error) {
+            console.error("Fetch failed:", error);
+        }
+    }
+    fetchProducts();
+</script>
 
 </body>
 </html>
