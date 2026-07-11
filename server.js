@@ -15,6 +15,7 @@ mongoose.connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 5000 })
 .catch(err => console.error('❌ DB Error:', err));
 
 // এই লাইনটি খুঁজে বের করো এবং এভাবে পরিবর্তন করো:
+// কোডের ১৯ নম্বর লাইনটি এভাবে লিখুন
 const Product = mongoose.model('Product', new mongoose.Schema({
     name: String,
     price: Number,
