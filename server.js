@@ -10,7 +10,8 @@ const path = require('path');
 app.use(express.static(path.join(__dirname)));
 
 // ডাটাবেস কানেকশন - এখানে একটি অপশন যোগ করেছি যাতে কানেকশন দ্রুত হয়
-mongoose.connect('mongodb://127.0.0.1:27017/artisanAlley', {
+mongoose.connect(process.env.MONGO_URL);
+{
     serverSelectionTimeoutMS: 5000 
 })
 .then(() => console.log('✅ Database Connected!'))
