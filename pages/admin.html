@@ -75,7 +75,7 @@
     <script>
         // প্রোডাক্ট লোড করার কোড
         async function loadProducts() {
-            const response = await fetch('http://localhost:3000/get-products');
+            const response = await fetch('https://tahis-artisan-alley.onrender.com/get-products');
             const data = await response.json();
             const body = document.getElementById('product-body');
             body.innerHTML = ''; // খালি করে নেওয়া
@@ -94,7 +94,7 @@
         // ডিলিট করার কোড
         async function deleteProduct(id) {
             if(confirm("প্রোডাক্টটি ডিলিট করতে চান?")) {
-                await fetch(`http://localhost:3000/delete-product/${id}`, { method: 'DELETE' });
+                await fetch(`https://tahis-artisan-alley.onrender.com/delete-product/${id}`, { method: 'DELETE' });
                 loadProducts(); // ডিলিট হওয়ার পর আবার লিস্ট আপডেট করবে
             }
         }
@@ -105,7 +105,7 @@
             const formData = new FormData(e.target);
             const productData = Object.fromEntries(formData.entries());
 
-            await fetch('http://localhost:3000/add-product', {
+            await fetch('https://tahis-artisan-alley.onrender.com/add-product', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(productData)

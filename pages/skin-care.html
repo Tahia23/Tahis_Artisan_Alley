@@ -98,7 +98,7 @@
     <script>
     async function fetchProducts() {
         try {
-            const res = await fetch('http://localhost:3000/get-products');
+            const res = await fetch('https://tahis-artisan-alley.onrender.com/get-products');
             const data = await res.json();
             console.log("Data fetched:", data); // কনসোলে ডাটা দেখালে বুঝতে পারবে সাকসেস
             const container = document.getElementById('product-container');
