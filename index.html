@@ -111,6 +111,7 @@
     <!-- Added back Featured Products Section -->
     <section class="product-section">
         <h2>Featured Products</h2>
+        <div id="product-container" class=" product-grid"></div>
         <div class="product-grid">
             <div class="product-card">
                 <div class="product-image-box" style="background-image: url('images/cotton-dress.jpg');"></div>
@@ -172,6 +173,29 @@
             slides[currentSlide].style.display = "block";
         }
         setInterval(showSlide, 3000);
+ 
+
+  // নতুন কোড এখান থেকে শুরু
+  async function fetchProducts() {
+      const response = await fetch('https://tahis-artisan-alley.onrender.com/get-products');
+      const products = await response.json();
+      const container = document.getElementById('product-container'); 
+      
+      if(container) {
+          container.innerHTML = '';
+          products.forEach(product => {
+              container.innerHTML += `
+                  <div class="product-card">
+                      <h3>${product.name}</h3>
+                      <p>Price: ${product.price}</p>
+                  </div>
+              `;
+          });
+      }
+  }
+  fetchProducts();
+  // নতুন কোড এখানে শেষ
+
     </script>
 </body>
 </html>
