@@ -6,6 +6,9 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+const path = require('path');
+app.use(express.static(path.join(__dirname)));
+
 // ডাটাবেস কানেকশন - এখানে একটি অপশন যোগ করেছি যাতে কানেকশন দ্রুত হয়
 mongoose.connect('mongodb://127.0.0.1:27017/artisanAlley', {
     serverSelectionTimeoutMS: 5000 
