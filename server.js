@@ -60,7 +60,7 @@ app.delete('/delete-product/:id', async (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.send('Server is running and API is working!');
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(3000, () => console.log('🚀 Server running on port 3000'));
