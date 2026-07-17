@@ -199,14 +199,20 @@
 
 // নতুন লগইন/লগআউট লজিক
 window.onload = function() {
+    // লগইন বাটন লজিক
     if (localStorage.getItem('isLoggedIn') === 'true') {
         document.getElementById('loginBtn').innerText = "Logout";
     }
 
-    // অ্যাডমিন মেনু দেখানোর লজিক
-        if (localStorage.getItem('userEmail') === 'tahiasima023@gmail.com') {
-            document.getElementById('adminDashboardBtn').style.display = "block";
-        }
+    // অ্যাডমিন বাটন লজিক (লগইন করা থাকলে এবং ইমেইল মিললে তবেই দেখাবে)
+    const email = localStorage.getItem('userEmail');
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+
+    if (isLoggedIn === 'true' && email === 'tahiasima023@gmail.com') {
+        document.getElementById('adminDashboardBtn').style.display = "block";
+    } else {
+        document.getElementById('adminDashboardBtn').style.display = "none";
+    }
 };
 
 document.getElementById('loginBtn').addEventListener('click', function() {
