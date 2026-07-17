@@ -184,15 +184,18 @@
       
       if(container) {
           container.innerHTML = '';
-          products.forEach(product => {
-            if (product.category !== 'Featured')
-              container.innerHTML += `
-                  <div class="product-card">
-                      <h3>${product.name}</h3>
-                      <p>Price: ${product.price}</p>
-                  </div>
-              `;
-          });
+         products.forEach(product => {
+    // এই ইফ কন্ডিশনটিই ম্যাজিক করবে! 
+    // যদি ক্যাটাগরি 'Featured' হয়, তবে সেটি হোম পেজে আসবেই না।
+    if (product.category !== 'Featured') { 
+        container.innerHTML += `
+            <div class="product-card">
+                <h3>${product.name}</h3>
+                <p>Price: ${product.price}</p>
+            </div>
+        `;
+    }
+});
       }
   }
   fetchProducts();
