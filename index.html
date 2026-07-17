@@ -185,6 +185,7 @@
       if(container) {
           container.innerHTML = '';
           products.forEach(product => {
+            if (product.category !== 'Featured')
               container.innerHTML += `
                   <div class="product-card">
                       <h3>${product.name}</h3>
