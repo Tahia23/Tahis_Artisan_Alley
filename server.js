@@ -49,6 +49,12 @@ app.get('/get-products', async (req, res) => {
     }
 });
 
+app.post('/login', (req, res) => {
+    const { email, password } = req.body;
+    console.log("Login Attempt:", email, password);
+    res.status(200).json({ message: "Login Successful" });
+});
+
 app.delete('/delete-product/:id', async (req, res) => {
     try {
         await Product.findByIdAndDelete(req.params.id);
