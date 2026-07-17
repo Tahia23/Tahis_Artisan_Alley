@@ -39,6 +39,7 @@
                     </li>
                     <li><a href="pages/cart.html">Cart 🛍️</a></li>
                     <li><a href="javascript:void(0)" id="loginBtn" class="login-btn">Login</a></li>
+                    <li><a href="/admin" id="adminDashboardBtn" style="display: none;">Admin</a></li>
                 </ul>
             </nav>
         </div>
@@ -201,6 +202,11 @@ window.onload = function() {
     if (localStorage.getItem('isLoggedIn') === 'true') {
         document.getElementById('loginBtn').innerText = "Logout";
     }
+
+    // অ্যাডমিন মেনু দেখানোর লজিক
+        if (localStorage.getItem('userEmail') === 'admin@tahi.com') {
+            document.getElementById('adminDashboardBtn').style.display = "block";
+        }
 };
 
 document.getElementById('loginBtn').addEventListener('click', function() {
