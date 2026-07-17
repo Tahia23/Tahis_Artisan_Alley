@@ -69,4 +69,9 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// সার্ভারে এই লাইনটি যোগ করো
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'pages', 'admin.html'));
+});
+
 app.listen(3000, () => console.log('🚀 Server running on port 3000'));

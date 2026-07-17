@@ -73,7 +73,14 @@
     </div>
 
     <script>
-        // প্রোডাক্ট লোড করার কোড
+    // প্রোটেকশন চেক (অ্যাডমিন ছাড়া কেউ ঢুকতে পারবে না)
+    if (localStorage.getItem('userEmail') !== 'admin@tahi.com') {
+        alert("Access Denied! Only for Admin.");
+        window.location.href = '/'; // সাধারণ ইউজারকে হোম পেজে পাঠিয়ে দিবে
+    }
+
+    // প্রোডাক্টি লোড করার কোড... (বাকি কোডগুলো এর নিচে থাকবে)
+
         async function loadProducts() {
             const response = await fetch('https://tahis-artisan-alley.onrender.com/get-products');
             const data = await response.json();

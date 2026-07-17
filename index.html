@@ -215,6 +215,8 @@ document.getElementById('loginBtn').addEventListener('click', function() {
 
 document.getElementById('loginForm').addEventListener('submit', function() {
     localStorage.setItem('isLoggedIn', 'true');
+    // লগইন করা ইমেইলটি সেভ করো যাতে অ্যাডমিন পেজে চেক করা যায়
+    localStorage.setItem('userEmail', document.getElementById('email').value);
 });
 
 // পুরনো কোডগুলো এর নিচে বা উপরে থাকতে পারে, সমস্যা নেই
