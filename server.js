@@ -52,9 +52,8 @@ app.get('/get-products', async (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-    const { email, password } = req.body;
-    console.log("Login Attempt:", email, password);
-    res.status(200).json({ message: "Login Successful" });
+    // লগইন চেক করার পর...
+    res.redirect('/'); // এটি ইউজারকে লগইনের পর সরাসরি হোম পেজে নিয়ে যাবে
 });
 
 app.delete('/delete-product/:id', async (req, res) => {
