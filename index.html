@@ -196,6 +196,29 @@
   fetchProducts();
   // নতুন কোড এখানে শেষ
 
+// নতুন লগইন/লগআউট লজিক
+window.onload = function() {
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+        document.getElementById('loginBtn').innerText = "Logout";
+    }
+};
+
+document.getElementById('loginBtn').addEventListener('click', function() {
+    if (this.innerText === "Logout") {
+        localStorage.removeItem('isLoggedIn');
+        alert("You have been logged out!");
+        window.location.reload();
+    } else {
+        document.getElementById('loginModal').style.display = "block";
+    }
+});
+
+document.getElementById('loginForm').addEventListener('submit', function() {
+    localStorage.setItem('isLoggedIn', 'true');
+});
+
+// পুরনো কোডগুলো এর নিচে বা উপরে থাকতে পারে, সমস্যা নেই
+
     </script>
 </body>
 </html>
