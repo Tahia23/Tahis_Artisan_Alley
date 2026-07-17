@@ -879,3 +879,18 @@ body { font-family: 'Poppins', sans-serif; }
     display: flex !important;
   }
 }
+
+/* নেভ-বার মেনু লিংকগুলোর স্টাইল */
+.nav-menu li a {
+    text-decoration: none;
+    color: white; /* মেনুর কালার */
+    padding: 10px 15px;
+    transition: 0.3s;
+}
+
+/* মাউস নিলে যেন হালকা পরিবর্তন হয় */
+.nav-menu li a:hover {
+    color: #ffcc00; /* হোভার কালার */
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+}
