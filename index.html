@@ -184,10 +184,11 @@
       
       if(container) {
           container.innerHTML = '';
-         products.forEach(product => {
-    // এই ইফ কন্ডিশনটিই ম্যাজিক করবে! 
-    // যদি ক্যাটাগরি 'Featured' হয়, তবে সেটি হোম পেজে আসবেই না।
-    if (product.category !== 'Featured') { 
+         // index.html ফাইলে ১৮৭ নম্বর লাইনের পরে এই পরিবর্তনটি করো
+products.forEach(product => {
+    // এখানে ফিল্টার করো যেন হোম পেজে শুধু নির্দিষ্ট ক্যাটাগরি আসে
+    // তুমি যদি চাও হোম পেজে সব প্রোডাক্ট না এসে শুধু স্কিনকেয়ার আসুক:
+    if (product.category === 'skincare') { 
         container.innerHTML += `
             <div class="product-card">
                 <h3>${product.name}</h3>
