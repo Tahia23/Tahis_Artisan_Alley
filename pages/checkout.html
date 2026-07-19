@@ -30,18 +30,19 @@
     <div class="cart-container">
         <div class="checkout-box">
             <h2>Shipping Details</h2>
-            <form>
+            <!-- আইডি যোগ করা হয়েছে -->
+            <form id="checkout-form">
                 <div class="form-group">
                     <label>Customer Name</label>
-                    <input type="text" placeholder="Enter your full name" required>
+                    <input type="text" id="cust-name" placeholder="Enter your full name" required>
                 </div>
                 <div class="form-group">
                     <label>Phone Number</label>
-                    <input type="tel" placeholder="Enter your phone number" required>
+                    <input type="tel" id="cust-phone" placeholder="Enter your phone number" required>
                 </div>
                 <div class="form-group">
                     <label>Delivery Address</label>
-                    <textarea rows="4" placeholder="Enter your complete address" required></textarea>
+                    <textarea rows="4" id="cust-address" placeholder="Enter your complete address" required></textarea>
                 </div>
                 <button type="submit" class="btn" style="width: 100%; border: none; cursor: pointer;">Place Order</button>
             </form>
@@ -52,5 +53,44 @@
         <p>&copy; 2026 Tahi's Artisan Alley. All Rights Reserved.</p>
     </footer>
 
+    <!-- ডাটা পাঠানোর স্ক্রিপ্ট -->
+    <script>
+        document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            if (cart.length === 0) {
+                alert("Your cart is empty!");
+                return;
+            }
+
+            const orderData = {
+                name: document.getElementById('cust-name').value,
+                phone: document.getElementById('cust-phone').value,
+                address: document.getElementById('cust-address').value,
+                items: cart,
+                total: "Calculated at server" // সার্ভারে টোটাল ক্যালকুলেট করাই ভালো
+            };
+
+            try {
+                const response = await fetch('https://tahis-artisan-alley.onrender.com/place-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                });
+
+                if (response.ok) {
+                    alert("Order placed successfully!");
+                    localStorage.removeItem('cart');
+                    window.location.href = '../index.html';
+                } else {
+                    alert("Failed to place order. Please try again.");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Server connection failed!");
+            }
+        });
+    </script>
 </body>
 </html>

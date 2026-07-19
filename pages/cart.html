@@ -47,15 +47,8 @@
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td><div class="cart-img-placeholder" style="background-image: url('../images/cotton-dress.jpg');"></div></td>
-                        <td>Cotton Embroidery Dress</td>
-                        <td>BDT 1,550</td>
-                        <td>1</td>
-                        <td>BDT 1,550</td>
-                        <td><button class="remove-btn">Remove</button></td>
-                    </tr>
+                <tbody id="cart-table-body">
+                    <!-- জাভাস্ক্রিপ্ট এই জায়গায় ডাটা রেন্ডার করবে -->
                 </tbody>
             </table>
 
@@ -63,7 +56,7 @@
                 <h3>Order Summary</h3>
                 <div class="summary-row">
                     <span>Subtotal:</span>
-                    <span>BDT 1,550</span>
+                    <span id="subtotal">BDT 0</span>
                 </div>
                 <div class="summary-row">
                     <span>Delivery Fee:</span>
@@ -72,7 +65,7 @@
                 <hr>
                 <div class="summary-row total-row">
                     <span>Total:</span>
-                    <span>BDT 1,610</span>
+                    <span id="total-with-delivery">BDT 60</span>
                 </div>
                 <button class="checkout-btn">Proceed to Checkout</button>
             </div>
@@ -92,5 +85,6 @@
         </div>
     </footer>
 
+<script src="../cart.js"></script>
 </body>
 </html>

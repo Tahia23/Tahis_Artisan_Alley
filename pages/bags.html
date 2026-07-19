@@ -56,7 +56,6 @@
     <section class="product-section">
         <div class="product-grid">
             
-            
             <div class="product-card">
                 <div class="product-image-box" id="main-bag-1" style="background-image: url('../images/premium.jpg');"></div>
                 <div class="product-info">
@@ -69,7 +68,8 @@
                         <img src="../images/premium-blue-jean.jpg" onclick="changeImage('main-bag-1', '../images/premium-blue-jean.jpg')" class="thumb">
                         <img src="../images/premium-peachy-pink.jpg" onclick="changeImage('main-bag-1', '../images/premium-peachy-pink.jpg')" class="thumb">
                     </div>
-                    <button class="add-to-cart-btn">Add To Cart</button>
+                    <!-- এখানে আইডি পাস করা হয়েছে -->
+                    <button class="add-to-cart-btn" onclick="addToCartWithImage('Premium Imported Leather Bag', 1950, 'main-bag-1')">Add To Cart</button>
                 </div>
             </div>
 
@@ -78,7 +78,7 @@
                 <div class="product-info">
                     <h3>Dior Printed Bag</h3>
                     <div class="price">BDT 1,999</div>
-                    <button class="add-to-cart-btn">Add To Cart</button>
+                    <button class="add-to-cart-btn" onclick="addToCart('Dior Printed Bag', 1999, '../images/bag-product.jpg')">Add To Cart</button>
                 </div>
             </div>
 
@@ -102,6 +102,18 @@
         function changeImage(id, imagePath) {
             document.getElementById(id).style.backgroundImage = "url('" + imagePath + "')";
         }
+
+        // নতুন ফাংশন যা বর্তমান ছবি খুঁজে বের করে কার্টে যোগ করবে
+       function addToCartWithImage(name, price, containerId) {
+    let element = document.getElementById(containerId);
+    // ব্যাকগ্রাউন্ড ইমেজ থেকে শুধু পাথটুকু বের করা
+    let bg = element.style.backgroundImage;
+    let imageUrl = bg.replace(/url\(['"]?(.*?)['"]?\)/, '$1');
+    
+    // পাথটি যদি এভাবে '../images/premium-maroon.jpg' থাকে, তবে এটিই কার্টে যাবে
+    addToCart(name, price, imageUrl);
+}
     </script>
+    <script src="../cart.js"></script>
 </body>
 </html>

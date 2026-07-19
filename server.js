@@ -11,19 +11,27 @@ app.use(cors());
 const path = require('path');
 app.use(express.static(path.join(__dirname)));
 
-// ডাটাবেস কানেকশন - এখানে একটি অপশন যোগ করেছি যাতে কানেকশন দ্রুত হয়
+// ডাটাবেস কানেকশন
 mongoose.connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 5000 })
 .then(() => console.log('✅ Database Connected!'))
 .catch(err => console.error('❌ DB Error:', err));
 
-// এই লাইনটি খুঁজে বের করো এবং এভাবে পরিবর্তন করো:
-// কোডের ১৯ নম্বর লাইনটি এভাবে লিখুন
 const Product = mongoose.model('Product', new mongoose.Schema({
     name: String,
     price: Number,
     category: String,
     image: String
-}), 'products'); // এখানে শেষ প্যারামিটারে 'products' লিখে দাও
+}), 'products');
+
+// অর্ডার সেভ করার জন্য মডেল
+const Order = mongoose.model('Order', new mongoose.Schema({
+    name: String,
+    phone: String,
+    address: String,
+    items: Array,
+    total: String,
+    date: { type: Date, default: Date.now }
+}), 'orders');
 
 app.post('/add-product', async (req, res) => {
     try {
@@ -42,6 +50,19 @@ app.post('/add-product', async (req, res) => {
     }
 });
 
+// অর্ডার রিসিভ করার রুট
+app.post('/place-order', async (req, res) => {
+    try {
+        const newOrder = new Order(req.body);
+        await newOrder.save();
+        console.log("📦 New Order Received:", req.body);
+        res.status(200).json({ message: 'Order Placed!' });
+    } catch (err) {
+        console.error("❌ Order Error:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 app.get('/get-products', async (req, res) => {
     try {
         const products = await Product.find();
@@ -52,8 +73,7 @@ app.get('/get-products', async (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-    // লগইন চেক করার পর...
-    res.redirect('/'); // এটি ইউজারকে লগইনের পর সরাসরি হোম পেজে নিয়ে যাবে
+    res.redirect('/'); 
 });
 
 app.delete('/delete-product/:id', async (req, res) => {
@@ -69,7 +89,6 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// সার্ভারে এই লাইনটি যোগ করো
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'pages', 'admin.html'));
 });

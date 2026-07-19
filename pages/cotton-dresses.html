@@ -36,47 +36,82 @@
 
     <section class="product-section">
         <div class="product-grid">
+            <!-- ড্রেস ১ -->
             <div class="product-card">
                 <div class="product-image-box" style="background-image: url('../images/cotton-dress.jpg');"></div>
                 <div class="product-info">
                     <h3>Cotton Embroidery Dress</h3>
                     <div class="price">BDT 1,550</div>
-                    <button class="add-to-cart-btn">Add To Cart</button>
+                    <select id="size-1">
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                    </select>
+                    <button class="add-to-cart-btn" onclick="addToCartWithSize('Cotton Embroidery Dress', 1550, '../images/cotton-dress.jpg', 'size-1')">Add To Cart</button>
                 </div>
             </div>
+            <!-- ড্রেস ২ -->
             <div class="product-card">
                 <div class="product-image-box" style="background-image: url('../images/d1.jpg');"></div>
                 <div class="product-info">
                     <h3>Cotton Embroidery Dress</h3>
                     <div class="price">BDT 1,550</div>
-                    <button class="add-to-cart-btn">Add To Cart</button>
+                    <select id="size-2">
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                    </select>
+                    <button class="add-to-cart-btn" onclick="addToCartWithSize('Cotton Embroidery Dress', 1550, '../images/d1.jpg', 'size-2')">Add To Cart</button>
                 </div>
             </div>
+            <!-- ড্রেস ৩ -->
             <div class="product-card">
                 <div class="product-image-box" style="background-image: url('../images/d2.jpg');"></div>
                 <div class="product-info">
                     <h3>Cotton Embroidery Dress</h3>
                     <div class="price">BDT 1,550</div>
-                    <button class="add-to-cart-btn">Add To Cart</button>
+                    <select id="size-3">
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                    </select>
+                    <button class="add-to-cart-btn" onclick="addToCartWithSize('Cotton Embroidery Dress', 1550, '../images/d2.jpg', 'size-3')">Add To Cart</button>
                 </div>
             </div>
+            <!-- ড্রেস ৪ -->
             <div class="product-card">
                 <div class="product-image-box" style="background-image: url('../images/d3.jpg');"></div>
                 <div class="product-info">
                     <h3>Cotton cutwork plazu pant Dress</h3>
                     <div class="price">BDT 1,350</div>
-                    <button class="add-to-cart-btn">Add To Cart</button>
-        </div>
-        </div>
-        <div class="product-card">
+                    <select id="size-4">
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                    </select>
+                    <button class="add-to-cart-btn" onclick="addToCartWithSize('Cotton cutwork plazu pant Dress', 1350, '../images/d3.jpg', 'size-4')">Add To Cart</button>
+                </div>
+            </div>
+            <!-- ড্রেস ৫ -->
+            <div class="product-card">
                 <div class="product-image-box" style="background-image: url('../images/d4.jpg');"></div>
                 <div class="product-info">
                     <h3>Cotton cutwork plazu pant Dress</h3>
                     <div class="price">BDT 1,350</div>
-                    <button class="add-to-cart-btn">Add To Cart</button>
-                    </div>
-                    </div>
-
+                    <select id="size-5">
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                    </select>
+                    <button class="add-to-cart-btn" onclick="addToCartWithSize('Cotton cutwork plazu pant Dress', 1350, '../images/d4.jpg', 'size-5')">Add To Cart</button>
+                </div>
+            </div>
+        </div>
     </section>
 
     <footer>
@@ -92,5 +127,18 @@
         </div>
     </footer>
 
+    <script>
+        // সাইজসহ কার্টে অ্যাড করার ফাংশন
+        function addToCartWithSize(name, price, image, sizeId) {
+            let size = document.getElementById(sizeId).value;
+            let fullName = name + " (Size: " + size + ")";
+            
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.push({ productName: fullName, price: price, imageUrl: image, quantity: 1 });
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert(fullName + " added to cart!");
+        }
+    </script>
+    <script src="../cart.js"></script>
 </body>
 </html>
