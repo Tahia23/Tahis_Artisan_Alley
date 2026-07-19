@@ -1,0 +1,43 @@
+<!-- my-orders.html -->
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <h2>Check Order Status</h2>
+    <input type="text" id="phoneInput" placeholder="Enter your phone number">
+    <button onclick="checkOrders()">Check Status</button>
+    <div id="order-list"></div>
+
+    <script>
+        async function checkOrders() {
+            const phone = document.getElementById('phoneInput').value;
+            const list = document.getElementById('order-list');
+            
+            if (!phone) {
+                alert("Please enter your phone number!");
+                return;
+            }
+
+            try {
+                list.innerHTML = "Loading...";
+                const res = await fetch(`https://tahis-artisan-alley.onrender.com/get-orders/${phone}`);
+                const orders = await res.json();
+                
+                if (orders.length === 0) {
+                    list.innerHTML = "<p>No orders found for this number.</p>";
+                } else {
+                    list.innerHTML = orders.map(o => `
+                        <div style="border:1px solid #ccc; padding:10px; margin:10px 0;">
+                            <p><strong>Total:</strong> ${o.total}</p>
+                            <p><strong>Status:</strong> ${o.status}</p>
+                            <p><strong>Date:</strong> ${new Date(o.date).toLocaleDateString()}</p>
+                        </div>
+                    `).join('');
+                }
+            } catch (err) {
+                list.innerHTML = "<p>Error loading orders. Please try again.</p>";
+                console.error(err);
+            }
+        }
+    </script>
+</body>
+</html>
