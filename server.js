@@ -94,15 +94,7 @@ app.get('/admin', (req, res) => {
 });
 
 // অর্ডার সেভ করার জন্য মডেল
-const Order = mongoose.model('Order', new mongoose.Schema({
-    name: String,
-    phone: String,
-    address: String,
-    items: Array,
-    total: String,
-    status: { type: String, default: 'Pending' }, // স্ট্যাটাস ফিল্ড
-    date: { type: Date, default: Date.now }
-}), 'orders');
+
 
 // অর্ডার রিসিভ করার রুট
 app.post('/place-order', async (req, res) => {
