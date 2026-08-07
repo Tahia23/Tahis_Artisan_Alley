@@ -64,7 +64,7 @@ app.post('/signup', async (req, res) => {
         // চেক করা ইমেইল আগে থেকেই আছে কিনা
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(400).send('<h1>Email already registered! <a href="/">Go Back</a></h1>');
+            return res.status(400).send('<h1>Email already registered! Please <a href="/">Sign In</a></h1>');
         }
 
         // নতুন ইউজার ডাটাবেসে সেভ করা
@@ -72,7 +72,8 @@ app.post('/signup', async (req, res) => {
         await newUser.save();
         
         console.log("👤 New User Registered:", email);
-        res.redirect('/?signup=success');
+        // আসল ইমেইল ব্যাকএন্ড থেকে ফ্রন্টএন্ডে পাঠানো হচ্ছে
+        res.redirect(`/?signup=success&email=${encodeURIComponent(email)}`);
     } catch (err) {
         console.error("❌ Sign Up Error:", err);
         res.status(500).send("Registration Failed: " + err.message);
@@ -89,7 +90,8 @@ app.post('/login', async (req, res) => {
 
         if (user) {
             console.log("🔑 User Logged In:", email);
-            res.redirect('/?login=success');
+            // আসল ইমেইল ব্যাকএন্ড থেকে ফ্রন্টএন্ডে পাঠানো হচ্ছে
+            res.redirect(`/?login=success&email=${encodeURIComponent(email)}`);
         } else {
             res.status(401).send('<h1>Invalid Email or Password! <a href="/">Try Again</a></h1>');
         }

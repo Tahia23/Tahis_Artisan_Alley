@@ -263,8 +263,11 @@
 
         // ৬. লগইন ও এডমিন স্টেট হ্যান্ডলিং
         const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('login') === 'success' || urlParams.get('signup') === 'success') {
-            localStorage.setItem('userEmail', 'tahiasima023@gmail.com');
+        const loggedEmail = urlParams.get('email');
+
+        // সাইনইন বা সাইনআপ থেকে রিডাইরেক্ট হয়ে আসলে URL থেকে ইমেইল সেভ করা
+        if ((urlParams.get('login') === 'success' || urlParams.get('signup') === 'success') && loggedEmail) {
+            localStorage.setItem('userEmail', loggedEmail.toLowerCase().trim());
             localStorage.setItem('isLoggedIn', 'true');
             window.history.replaceState({}, document.title, "/");
         }
@@ -276,9 +279,18 @@
             const adminBtn = document.getElementById('adminDashboardBtn');
             const authBtn = document.getElementById('loginBtn');
 
-            if (isLoggedIn === 'true' && userEmail === 'tahiasima023@gmail.com') {
-                if (adminBtn) adminBtn.style.display = 'inline-block';
-                
+            // আসল এডমিন ইমেইল
+            const ADMIN_EMAIL = 'tahiasima023@gmail.com';
+
+            if (isLoggedIn === 'true') {
+                // ১. যদি ইউজারের ইমেইল এডমিন ইমেইলের সাথে মিলে যায়
+                if (userEmail === ADMIN_EMAIL) {
+                    if (adminBtn) adminBtn.style.display = 'inline-block';
+                } else {
+                    if (adminBtn) adminBtn.style.display = 'none';
+                }
+
+                // ২. লগইন অবস্থায় বাটন পরিবর্তন করে Sign Out দেখানো
                 if (authBtn) {
                     authBtn.innerText = 'Sign Out';
                     authBtn.addEventListener('click', (e) => {
