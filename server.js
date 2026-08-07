@@ -1,4 +1,3 @@
-require('dotenv').config(); // 👈 dotenv কনফিগ
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
