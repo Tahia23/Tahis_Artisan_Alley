@@ -38,7 +38,7 @@
                         </ul>
                     </li>
                     <li><a href="pages/cart.html">Cart 🛍️</a></li>
-                    <li><a href="javascript:void(0)" id="loginBtn" class="login-btn">Login</a></li>
+                    <li><a href="javascript:void(0)" id="loginBtn" class="login-btn">SignUp/SignIn</a></li>
                     <li><a href="/admin" id="adminDashboardBtn" style="display: none;">Admin</a></li>
                 </ul>
             </nav>
@@ -46,18 +46,42 @@
     </header>
 
     <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2>Login</h2>
-            <form id="loginForm" action="/login" method="POST">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-                <button type="submit" class="submit-btn">Login</button>
-            </form>
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+
+        <!-- Tab Toggle Buttons -->
+        <div class="tab-header" style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #eee;">
+            <button type="button" id="tabSignUp" class="tab-btn active" onclick="switchTab('signup')" style="flex: 1; padding: 10px; font-weight: bold; cursor: pointer;">Sign Up</button>
+            <button type="button" id="tabSignIn" class="tab-btn" onclick="switchTab('signin')" style="flex: 1; padding: 10px; font-weight: bold; cursor: pointer;">Sign In</button>
         </div>
+
+        <!-- Sign Up Form (Default visible) -->
+        <form id="signUpForm" action="/signup" method="POST">
+            <label for="signup-name">Full Name:</label>
+            <input type="text" id="signup-name" name="name" required style="width: 100%; margin-bottom: 10px; padding: 8px;">
+
+            <label for="signup-email">Email:</label>
+            <input type="email" id="signup-email" name="email" required style="width: 100%; margin-bottom: 10px; padding: 8px;">
+
+            <label for="signup-password">Password:</label>
+            <input type="password" id="signup-password" name="password" required style="width: 100%; margin-bottom: 15px; padding: 8px;">
+
+            <button type="submit" class="submit-btn" style="width: 100%;">Sign Up</button>
+        </form>
+
+        <!-- Sign In Form (Hidden by default) -->
+        <form id="signInForm" action="/login" method="POST" style="display: none;">
+            <label for="login-email">Email:</label>
+            <input type="email" id="login-email" name="email" required style="width: 100%; margin-bottom: 10px; padding: 8px;">
+
+            <label for="login-password">Password:</label>
+            <input type="password" id="login-password" name="password" required style="width: 100%; margin-bottom: 15px; padding: 8px;">
+
+            <button type="submit" class="submit-btn" style="width: 100%;">Sign In</button>
+        </form>
+
     </div>
+</div>
 
     <section class="welcome-section">
   <div class="banner-container">

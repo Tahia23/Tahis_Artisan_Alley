@@ -1,14 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
+
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
-
 app.use(express.json());
 app.use(cors());
 
-const path = require('path');
 app.use(express.static(path.join(__dirname)));
 
 // ডাটাবেস কানেকশন
@@ -16,6 +16,9 @@ mongoose.connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 5000 })
 .then(() => console.log('✅ Database Connected!'))
 .catch(err => console.error('❌ DB Error:', err));
 
+// ---------------- Schemas & Models ----------------
+
+// ১. প্রোডাক্ট মডেল
 const Product = mongoose.model('Product', new mongoose.Schema({
     name: String,
     price: Number,
@@ -23,7 +26,7 @@ const Product = mongoose.model('Product', new mongoose.Schema({
     image: String
 }), 'products');
 
-// অর্ডার সেভ করার জন্য মডেল
+// ২. অর্ডার মডেল
 const Order = mongoose.model('Order', new mongoose.Schema({
     name: String,
     phone: String,
@@ -32,6 +35,61 @@ const Order = mongoose.model('Order', new mongoose.Schema({
     total: String,
     date: { type: Date, default: Date.now }
 }), 'orders');
+
+// ৩. ইউজার মডেল (Sign Up/Sign In-এর জন্য)
+const User = mongoose.model('User', new mongoose.Schema({
+    name: String,
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    createdAt: { type: Date, default: Date.now }
+}), 'users');
+
+// ---------------- Auth Routes (Sign Up & Sign In) ----------------
+
+// Registration / Sign Up Route
+app.post('/signup', async (req, res) => {
+    try {
+        const { name, email, password } = req.body;
+
+        // চেক করা ইমেইল আগে থেকেই আছে কিনা
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).send('<h1>Email already registered! <a href="/">Go Back</a></h1>');
+        }
+
+        // নতুন ইউজার ডাটাবেসে সেভ করা
+        const newUser = new User({ name, email, password });
+        await newUser.save();
+        
+        console.log("👤 New User Registered:", email);
+        res.redirect('/?signup=success');
+    } catch (err) {
+        console.error("❌ Sign Up Error:", err);
+        res.status(500).send("Registration Failed");
+    }
+});
+
+// Login / Sign In Route
+app.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // ডাটাবেসে ইউজার আছে কিনা সার্চ করা
+        const user = await User.findOne({ email, password });
+
+        if (user) {
+            console.log("🔑 User Logged In:", email);
+            res.redirect('/?login=success');
+        } else {
+            res.status(401).send('<h1>Invalid Email or Password! <a href="/">Try Again</a></h1>');
+        }
+    } catch (err) {
+        console.error("❌ Login Error:", err);
+        res.status(500).send("Login Failed");
+    }
+});
+
+// ---------------- Product Routes ----------------
 
 app.post('/add-product', async (req, res) => {
     try {
@@ -50,19 +108,6 @@ app.post('/add-product', async (req, res) => {
     }
 });
 
-// অর্ডার রিসিভ করার রুট
-app.post('/place-order', async (req, res) => {
-    try {
-        const newOrder = new Order(req.body);
-        await newOrder.save();
-        console.log("📦 New Order Received:", req.body);
-        res.status(200).json({ message: 'Order Placed!' });
-    } catch (err) {
-        console.error("❌ Order Error:", err);
-        res.status(500).json({ error: err.message });
-    }
-});
-
 app.get('/get-products', async (req, res) => {
     try {
         const products = await Product.find();
@@ -70,10 +115,6 @@ app.get('/get-products', async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
-});
-
-app.post('/login', (req, res) => {
-    res.redirect('/'); 
 });
 
 app.delete('/delete-product/:id', async (req, res) => {
@@ -85,18 +126,8 @@ app.delete('/delete-product/:id', async (req, res) => {
     }
 });
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
+// ---------------- Order Routes ----------------
 
-app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, 'pages', 'admin.html'));
-});
-
-// অর্ডার সেভ করার জন্য মডেল
-
-
-// অর্ডার রিসিভ করার রুট
 app.post('/place-order', async (req, res) => {
     try {
         const newOrder = new Order(req.body);
@@ -109,4 +140,15 @@ app.post('/place-order', async (req, res) => {
     }
 });
 
+// ---------------- Page Routes ----------------
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'pages', 'admin.html'));
+});
+
+// Server Listening
 app.listen(3000, () => console.log('🚀 Server running on port 3000'));

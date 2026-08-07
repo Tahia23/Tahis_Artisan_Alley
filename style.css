@@ -11,9 +11,10 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+/* Header-কে একদম স্ক্রিনের শেষ প্রান্ত পর্যন্ত (Full Width) প্রসারিত করা হলো */
 header {
-    background-color: #ffffffe8;
-    padding: 16px 6%;
+    background-color: #021f3d; /* নীল রঙটি হেডারেই দিয়ে দেওয়া হলো */
+    width: 100%;
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -21,13 +22,14 @@ header {
     box-shadow: 0 2px 15px rgba(17, 26, 20, 0.03);
 }
 
+/* Navbar-এর ভেতরের কনটেন্ট সুন্দরভাবে সাজানোর জন্য */
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    padding: 0 50px;
-    box-sizing: bprder-box;
+    padding: 16px 50px; /* উপরে-নিচে ১৬ পিক্সেল এবং ডানে-বামে ৫০ পিক্সেল প্যাডিং */
+    box-sizing: border-box; /* বানান ভুল ঠিক করা হয়েছে */
 }
 
 .logo-area {
@@ -897,4 +899,70 @@ body { font-family: 'Poppins', sans-serif; }
 /* অ্যাডমিন বাটন লুকিয়ে রাখার জন্য */
 #adminDashboardBtn {
     display: none; 
+}
+/* Modal Tab Styling */
+.tab-header {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 10px;
+    background: none;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #666;
+    transition: 0.3s;
+}
+
+.tab-btn.active {
+    color: #021f3d;
+    border-bottom: 3px solid #021f3d;
+}
+
+/* Form Styling & Visibility */
+.auth-form {
+    display: none;
+}
+
+.auth-form.active {
+    display: block;
+}
+
+.auth-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+}
+
+.auth-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #021f3d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.submit-btn:hover {
+    background-color: #032b54;
 }
