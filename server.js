@@ -1,3 +1,4 @@
+require('dotenv').config(); // 👈 dotenv কনফিগ
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -12,9 +13,15 @@ app.use(cors());
 app.use(express.static(path.join(__dirname)));
 
 // ডাটাবেস কানেকশন
-mongoose.connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 5000 })
-.then(() => console.log('✅ Database Connected!'))
-.catch(err => console.error('❌ DB Error:', err));
+const MONGO_URI = process.env.MONGO_URI;
+
+if (!MONGO_URI) {
+    console.error('❌ Error: MONGO_URI is missing in Environment Variables!');
+} else {
+    mongoose.connect(MONGO_URI, { serverSelectionTimeoutMS: 5000 })
+    .then(() => console.log('✅ Database Connected!'))
+    .catch(err => console.error('❌ DB Error:', err));
+}
 
 // ---------------- Schemas & Models ----------------
 
@@ -51,6 +58,10 @@ app.post('/signup', async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
+        if (!email || !password) {
+            return res.status(400).send('<h1>Email and Password are required! <a href="/">Go Back</a></h1>');
+        }
+
         // চেক করা ইমেইল আগে থেকেই আছে কিনা
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -65,7 +76,7 @@ app.post('/signup', async (req, res) => {
         res.redirect('/?signup=success');
     } catch (err) {
         console.error("❌ Sign Up Error:", err);
-        res.status(500).send("Registration Failed");
+        res.status(500).send("Registration Failed: " + err.message);
     }
 });
 
@@ -85,7 +96,7 @@ app.post('/login', async (req, res) => {
         }
     } catch (err) {
         console.error("❌ Login Error:", err);
-        res.status(500).send("Login Failed");
+        res.status(500).send("Login Failed: " + err.message);
     }
 });
 
@@ -150,5 +161,6 @@ app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'pages', 'admin.html'));
 });
 
-// Server Listening
-app.listen(3000, () => console.log('🚀 Server running on port 3000'));
+// Server Listening (Render-এর জন্য Dynamic PORT)
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
