@@ -262,6 +262,49 @@ document.getElementById('loginForm').addEventListener('submit', function() {
 
 // পুরনো কোডগুলো এর নিচে বা উপরে থাকতে পারে, সমস্যা নেই
 
-    </script>
+    <script>
+  // ১. URL থেকে চেক করা লগইন সাকসেস হয়েছে কিনা
+  const urlParams = new URLSearchParams(window.location.search);
+
+  if (urlParams.get('login') === 'success' || urlParams.get('signup') === 'success') {
+      // এডমিন ইমেইল সেভ করা
+      localStorage.setItem('userEmail', 'tahiasima023@gmail.com');
+      localStorage.setItem('isLoggedIn', 'true');
+      
+      // URL রিফ্রেশ/ক্লিয়ার করা
+      window.history.replaceState({}, document.title, "/");
+  }
+
+  // ২. পেজ লোড হলে Admin বাটন ও Login/Logout বাটন আপডেট করা
+  document.addEventListener('DOMContentLoaded', () => {
+      const userEmail = localStorage.getItem('userEmail');
+      const adminBtn = document.getElementById('adminDashboardBtn'); // 👈 আপনার আইডি
+      const authBtn = document.getElementById('loginBtn'); // আপনার লগইন/সাইনআপ বাটন
+
+      // যদি এডমিন লগইন থাকে
+      if (userEmail === 'tahiasima023@gmail.com') {
+          // Admin বাটন শো করবে
+          if (adminBtn) {
+              adminBtn.style.display = 'inline-block'; 
+          }
+          // Login বাটন বদলে Sign Out হবে
+          if (authBtn) {
+              authBtn.innerText = 'Sign Out';
+              authBtn.href = 'javascript:void(0)';
+              authBtn.onclick = logoutUser;
+          }
+      }
+  });
+
+  // ৩. সাইন আউট লজিক
+  function logoutUser() {
+      localStorage.removeItem('userEmail');
+      localStorage.removeItem('isLoggedIn');
+      alert('Logged out successfully!');
+      window.location.href = '/';
+  }
+</script>
+  
+
 </body>
 </html>
