@@ -13,6 +13,16 @@
         .submit-btn { background: #28a745; color: white; border: none; padding: 12px; width: 100%; cursor: pointer; font-size: 16px; border-radius: 4px; font-weight: bold; }
         .cancel-btn { background: #6c757d; color: white; border: none; padding: 10px; width: 100%; margin-top: 8px; cursor: pointer; border-radius: 4px; }
         .remove-btn { background: #dc3545; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; }
+        
+        /* Order History CSS */
+        .my-orders-section { margin: 40px auto; width: 90%; max-width: 1100px; padding: 25px; background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .orders-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #fff; }
+        .orders-table th, .orders-table td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        .orders-table th { background-color: #f4f4f4; }
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; color: white; display: inline-block; font-size: 13px; }
+        .status-pending { background-color: #ff9800; }
+        .status-accepted { background-color: #28a745; }
+        .status-rejected { background-color: #dc3545; }
     </style>
 </head>
 <body>
@@ -78,6 +88,26 @@
                 </div>
                 <button class="checkout-btn" id="checkoutBtn">Proceed to Checkout</button>
             </div>
+        </div>
+    </section>
+
+    <!-- কাস্টমারের অর্ডারের ইতিহাস ও স্ট্যাটাস সেকশন (নতুন যোগ করা হয়েছে) -->
+    <section id="myOrdersSection" class="my-orders-section">
+        <h2 style="text-align:center; margin-bottom: 10px;">My Previous Orders & Status</h2>
+        <div style="overflow-x:auto;">
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Items</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="user-orders-body">
+                    <tr><td colspan="4" style="text-align:center; padding: 15px; color: #666;">Loading order history...</td></tr>
+                </tbody>
+            </table>
         </div>
     </section>
 
@@ -184,17 +214,64 @@
             modal.style.display = 'none';
         };
 
-        // ৩. অর্ডার ব্যাকএন্ডে সাবমিট করা (Render Server Endpoint)
+        // ৩. ব্যাকএন্ড থেকে অর্ডার হিস্ট্রি ফেচ করা (নতুন যুক্ত করা হয়েছে)
+        async function fetchUserOrders() {
+            const userEmail = localStorage.getItem('userEmail');
+            const body = document.getElementById('user-orders-body');
+            
+            if (!userEmail) {
+                if (body) body.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 15px; color: #888;">Please Sign In / Sign Up on the main page to view your previous order history.</td></tr>`;
+                return;
+            }
+
+            try {
+                const response = await fetch(`https://tahis-artisan-alley.onrender.com/get-user-orders/${encodeURIComponent(userEmail)}`);
+                const orders = await response.json();
+
+                if (!orders || orders.length === 0) {
+                    if (body) body.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 15px; color: #666;">No orders found for <b>${userEmail}</b>.</td></tr>`;
+                    return;
+                }
+
+                if (body) {
+                    body.innerHTML = '';
+                    orders.forEach(order => {
+                        let itemsText = Array.isArray(order.items)
+                            ? order.items.map(item => typeof item === 'object' ? `${item.name || 'Product'} (x${item.quantity || 1})` : item).join(', ')
+                            : order.items || 'N/A';
+
+                        const statusClass = (order.status || 'Pending').toLowerCase();
+                        const orderDate = order.date ? new Date(order.date).toLocaleDateString('bn-BD') : 'N/A';
+
+                        body.innerHTML += `
+                            <tr>
+                                <td>${orderDate}</td>
+                                <td>${itemsText}</td>
+                                <td style="font-weight: bold;">BDT ${order.total || 0}</td>
+                                <td><span class="status-badge status-${statusClass}">${order.status || 'Pending'}</span></td>
+                            </tr>
+                        `;
+                    });
+                }
+            } catch(err) {
+                console.error("Error fetching user orders:", err);
+                if (body) body.innerHTML = `<tr><td colspan="4" style="text-align:center; color: red; padding: 15px;">Failed to load order history.</td></tr>`;
+            }
+        }
+
+        // ৪. অর্ডার ব্যাকএন্ডে সাবমিট করা (Render Server Endpoint)
         document.getElementById('orderForm').onsubmit = async (e) => {
             e.preventDefault();
 
             let subtotal = cart.reduce((sum, item) => sum + ((parseFloat(item.price) || 0) * (parseInt(item.quantity) || 1)), 0);
             let totalAmount = subtotal + 60;
 
+            const userEmail = document.getElementById('cust-email').value;
+
             // অ্যাডমিন প্যানেল ও ইউজারের ব্যাকএন্ডের চাহিদামতো সাজানো ডেটা Structure
             const orderPayload = {
                 name: document.getElementById('cust-name').value,
-                email: document.getElementById('cust-email').value,
+                email: userEmail,
                 phone: document.getElementById('cust-phone').value,
                 address: document.getElementById('cust-address').value,
                 items: cart, // আসল নাম, দাম, পরিমাণ সহ পুরো অ্যারে
@@ -212,8 +289,17 @@
 
                 if (response.ok) {
                     alert('Order placed successfully!');
+                    
+                    // অর্ডারের ইমেইল LocalStorage-এ সংরক্ষণ করা যাতে হিস্ট্রি পাওয়া যায়
+                    localStorage.setItem('userEmail', userEmail);
+                    
                     localStorage.removeItem('cart');
-                    window.location.href = '../index.html';
+                    cart = [];
+                    renderCart();
+                    modal.style.display = 'none';
+                    
+                    // সাথে সাথে নতুন অর্ডারের ইতিহাস রিফ্রেশ করবে
+                    fetchUserOrders();
                 } else {
                     alert('Failed to place order. Please try again.');
                 }
@@ -223,7 +309,9 @@
             }
         };
 
+        // প্রাথমিক ডাটা রেন্ডার ও হিস্ট্রি ফেস করা
         renderCart();
+        fetchUserOrders();
     </script>
 </body>
 </html>
