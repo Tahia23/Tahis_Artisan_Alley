@@ -10,6 +10,34 @@
         .product-list-box { margin-top: 40px; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        
+        /* এডিট ও অন্যান্য বাটনের স্টাইল */
+        .btn-edit {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+            margin-right: 5px;
+            border-radius: 4px;
+        }
+        .btn-delete {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .btn-cancel {
+            background-color: #777;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
@@ -29,15 +57,18 @@
 
     <div class="admin-container">
         <div class="form-box">
-            <h2>Add New Product</h2>
+            <h2 id="form-heading">Add New Product</h2>
             <form id="productForm">
+                <!-- এডিট করার সময় আইডি জমা রাখার হিডেন ইনপুট -->
+                <input type="hidden" id="editProductId" name="editProductId">
+
                 <div class="form-group">
                     <label>Product Name</label>
-                    <input type="text" name="name" required>
+                    <input type="text" name="name" id="prodName" required>
                 </div>
                 <div class="form-group">
                     <label>Category</label>
-                    <select name="category" required>
+                    <select name="category" id="prodCategory" required>
                         <option value="cotton">Cotton Ready Dress</option>
                         <option value="skincare">Skin Care</option>
                         <option value="bags">Bags</option>
@@ -46,13 +77,15 @@
                 </div>
                 <div class="form-group">
                     <label>Price (BDT)</label>
-                    <input type="number" name="price" required>
+                    <input type="number" name="price" id="prodPrice" required>
                 </div>
                 <div class="form-group">
                     <label>Image URL or Name (e.g., https://... or s5.jpg)</label>
-                    <input type="text" name="image" placeholder="Paste direct image link here" required>
+                    <input type="text" name="image" id="prodImage" placeholder="Paste direct image link here" required>
                 </div>
-                <button type="submit" class="btn">Upload Product</button>
+                
+                <button type="submit" class="btn" id="submitBtn">Upload Product</button>
+                <button type="button" class="btn-cancel" id="cancelBtn" style="display: none;" onclick="resetForm()">Cancel Edit</button>
             </form>
         </div>
 
@@ -79,46 +112,104 @@
         window.location.href = '/'; 
     }
 
-    async function loadProducts() {
-        const response = await fetch('https://tahis-artisan-alley.onrender.com/get-products');
-        const data = await response.json();
-        const body = document.getElementById('product-body');
-        body.innerHTML = ''; 
-        
-        data.forEach(product => {
-            body.innerHTML += `
-                <tr>
-                    <td>${product.name}</td>
-                    <td>${product.category}</td>
-                    <td><button onclick="deleteProduct('${product._id}')">Delete</button></td>
-                </tr>
-            `;
-        });
-    }
+    let globalProducts = [];
 
-    async function deleteProduct(id) {
-        if(confirm("প্রোডাক্টটি ডিলিট করতে চান?")) {
-            await fetch(`https://tahis-artisan-alley.onrender.com/delete-product/${id}`, { method: 'DELETE' });
-                loadProducts(); 
+    // ১. প্রোডাক্ট লোড করা
+    async function loadProducts() {
+        try {
+            const response = await fetch('https://tahis-artisan-alley.onrender.com/get-products');
+            globalProducts = await response.json();
+            const body = document.getElementById('product-body');
+            body.innerHTML = ''; 
+            
+            globalProducts.forEach(product => {
+                body.innerHTML += `
+                    <tr>
+                        <td>${product.name}</td>
+                        <td>${product.category}</td>
+                        <td>
+                            <button class="btn-edit" onclick="startEdit('${product._id}')">Edit</button>
+                            <button class="btn-delete" onclick="deleteProduct('${product._id}')">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        } catch (err) {
+            console.error("Error fetching products:", err);
         }
     }
 
+    // ২. এডিট বাটনে ক্লিক করলে ফর্মে ডেটা সেট করা
+    function startEdit(id) {
+        const product = globalProducts.find(p => p._id === id);
+        if (!product) return;
+
+        document.getElementById('editProductId').value = product._id;
+        document.getElementById('prodName').value = product.name;
+        document.getElementById('prodCategory').value = product.category;
+        document.getElementById('prodPrice').value = product.price;
+        document.getElementById('prodImage').value = product.image;
+
+        // UI চেঞ্জ (এডিট মোড)
+        document.getElementById('form-heading').innerText = 'Edit Product';
+        document.getElementById('submitBtn').innerText = 'Update Product';
+        document.getElementById('cancelBtn').style.display = 'inline-block';
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ৩. ফর্ম রিসেট করা
+    function resetForm() {
+        document.getElementById('editProductId').value = '';
+        document.getElementById('productForm').reset();
+        document.getElementById('form-heading').innerText = 'Add New Product';
+        document.getElementById('submitBtn').innerText = 'Upload Product';
+        document.getElementById('cancelBtn').style.display = 'none';
+    }
+
+    // ৪. ডিলিট ফাংশন
+    async function deleteProduct(id) {
+        if(confirm("প্রোডাক্টটি ডিলিট করতে চান?")) {
+            await fetch(`https://tahis-artisan-alley.onrender.com/delete-product/${id}`, { method: 'DELETE' });
+            loadProducts(); 
+        }
+    }
+
+    // ৫. প্রোডাক্ট অ্যাড বা আপডেট সামলানো
     document.getElementById('productForm').addEventListener('submit', async (e) => {
         e.preventDefault();
+        
+        const editId = document.getElementById('editProductId').value;
         const formData = new FormData(e.target);
         const productData = Object.fromEntries(formData.entries());
 
-        // ছবির ইনপুট থেকে স্পেস দূর করা
+        // স্পেস রিমুভ করা
         productData.image = productData.image.trim();
+        delete productData.editProductId; // এই ফিল্ডটি এপিআই তে পাঠানোর প্রয়োজন নেই
 
-        await fetch('https://tahis-artisan-alley.onrender.com/add-product', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(productData)
-        });
-        alert('Product Added!');
-        e.target.reset();
-        loadProducts(); 
+        const isEdit = Boolean(editId);
+        const url = isEdit 
+            ? `https://tahis-artisan-alley.onrender.com/edit-product/${editId}` 
+            : 'https://tahis-artisan-alley.onrender.com/add-product';
+        const method = isEdit ? 'PUT' : 'POST';
+
+        try {
+            const res = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(productData)
+            });
+
+            if (res.ok) {
+                alert(isEdit ? 'Product Updated Successfully!' : 'Product Added Successfully!');
+                resetForm();
+                loadProducts(); 
+            } else {
+                alert('Operation failed!');
+            }
+        } catch (err) {
+            console.error("Error submitting form:", err);
+        }
     });
 
     loadProducts(); 

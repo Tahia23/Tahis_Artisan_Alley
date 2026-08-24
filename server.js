@@ -138,6 +138,33 @@ app.delete('/delete-product/:id', async (req, res) => {
     }
 });
 
+// ৪. প্রোডাক্ট এডিট/আপডেট করার নতুন Route (নূতন যোগ করা হয়েছে)
+app.put('/edit-product/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updatedProduct = await Product.findByIdAndUpdate(
+            id,
+            {
+                name: req.body.name,
+                price: Number(req.body.price),
+                category: req.body.category,
+                image: req.body.image
+            },
+            { new: true }
+        );
+
+        if (!updatedProduct) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+
+        console.log("✏️ Product Updated:", updatedProduct.name);
+        res.status(200).json({ message: 'Updated Successfully', product: updatedProduct });
+    } catch (err) {
+        console.error("❌ Update Error:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // ---------------- Order Routes ----------------
 
 app.post('/place-order', async (req, res) => {
