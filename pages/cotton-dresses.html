@@ -57,7 +57,7 @@
                         <option value="L">L</option>
                         <option value="XL">XL</option>
                     </select>
-                    <button class="add-to-cart-btn" onclick="addToCartWithSize('Cotton Embroidery Dress', 1550, '../images/cotton-dress.jpg', 'size-1')">Add To Cart</button>
+                    <button class="add-to-cart-btn" onclick="addToCartWithSize('Cotton Embroidery Dress', 1550, 'cotton-dress.jpg', 'size-1')">Add To Cart</button>
                 </div>
             </div>
 
@@ -75,7 +75,7 @@
                         <option value="L">L</option>
                         <option value="XL">XL</option>
                     </select>
-                    <button class="add-to-cart-btn" onclick="addToCartWithSize('Cotton Embroidery Dress', 1550, '../images/d1.jpg', 'size-2')">Add To Cart</button>
+                    <button class="add-to-cart-btn" onclick="addToCartWithSize('Cotton Embroidery Dress', 1550, 'd1.jpg', 'size-2')">Add To Cart</button>
                 </div>
             </div>
 
@@ -93,7 +93,7 @@
                         <option value="L">L</option>
                         <option value="XL">XL</option>
                     </select>
-                    <button class="add-to-cart-btn" onclick="addToCartWithSize('Cotton Embroidery Dress', 1550, '../images/d2.jpg', 'size-3')">Add To Cart</button>
+                    <button class="add-to-cart-btn" onclick="addToCartWithSize('Cotton Embroidery Dress', 1550, 'd2.jpg', 'size-3')">Add To Cart</button>
                 </div>
             </div>
 
@@ -111,7 +111,7 @@
                         <option value="L">L</option>
                         <option value="XL">XL</option>
                     </select>
-                    <button class="add-to-cart-btn" onclick="addToCartWithSize('Cotton cutwork plazu pant Dress', 1350, '../images/d3.jpg', 'size-4')">Add To Cart</button>
+                    <button class="add-to-cart-btn" onclick="addToCartWithSize('Cotton cutwork plazu pant Dress', 1350, 'd3.jpg', 'size-4')">Add To Cart</button>
                 </div>
             </div>
 
@@ -129,7 +129,7 @@
                         <option value="L">L</option>
                         <option value="XL">XL</option>
                     </select>
-                    <button class="add-to-cart-btn" onclick="addToCartWithSize('Cotton cutwork plazu pant Dress', 1350, '../images/d4.jpg', 'size-5')">Add To Cart</button>
+                    <button class="add-to-cart-btn" onclick="addToCartWithSize('Cotton cutwork plazu pant Dress', 1350, 'd4.jpg', 'size-5')">Add To Cart</button>
                 </div>
             </div>
             <!-- ডাটাবেস থেকে আপলোড করা নতুন ড্রেসগুলো নিচে অটো যোগ হবে -->
@@ -150,23 +150,28 @@
     </footer>
 
     <script>
-        // ছবির অনলাইনের/লোকাল পাথ হ্যান্ডেল করার ফাংশন
-        function getCorrectImageUrl(image) {
-            if (!image) return 'https://via.placeholder.com/300?text=No+Image';
-            if (image.startsWith('http://') || image.startsWith('https://')) {
-                return image;
-            }
-            return '../images/' + image;
-        }
-
-        // সাইজসহ কার্টে অ্যাড করার ফাংশন
+        // সাইজসহ কার্টে অ্যাড করার সঠিক ফাংশন
         function addToCartWithSize(name, price, image, sizeId) {
             let sizeElement = document.getElementById(sizeId);
             let size = sizeElement ? sizeElement.value : 'Free Size';
             let fullName = name + " (Size: " + size + ")";
             
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
-            cart.push({ productName: fullName, price: price, imageUrl: image, quantity: 1 });
+            
+            // name এবং image প্রপার্টি পাঠানো হচ্ছে যেন cart.html সঠিকভাবে রিড করতে পারে
+            let existingIndex = cart.findIndex(item => (item.name || item.productName) === fullName);
+            
+            if (existingIndex > -1) {
+                cart[existingIndex].quantity = (cart[existingIndex].quantity || 1) + 1;
+            } else {
+                cart.push({ 
+                    name: fullName, 
+                    price: parseFloat(price), 
+                    image: image, 
+                    quantity: 1 
+                });
+            }
+            
             localStorage.setItem('cart', JSON.stringify(cart));
             alert(fullName + " added to cart!");
         }
@@ -181,17 +186,18 @@
                 const cottonProducts = products.filter(p => p.category === 'cotton');
 
                 cottonProducts.forEach((product, index) => {
-                    const imgSrc = getCorrectImageUrl(product.image);
                     const sizeId = `dynamic-size-${index}`;
+                    const imgFile = product.image ? product.image.split('/').pop() : 'logo.png';
+                    const displaySrc = product.image.startsWith('http') ? product.image : '../images/' + imgFile;
                     
                     grid.innerHTML += `
                         <div class="product-card">
                             <div class="product-image-box">
                                 <img 
-                                    src="${imgSrc}" 
+                                    src="${displaySrc}" 
                                     alt="${product.name}" 
                                     referrerpolicy="no-referrer" 
-                                    onerror="this.src='https://via.placeholder.com/300?text=Image+Error';"
+                                    onerror="this.src='../images/logo.png';"
                                 >
                             </div>
                             <div class="product-info">
@@ -203,7 +209,7 @@
                                     <option value="L">L</option>
                                     <option value="XL">XL</option>
                                 </select>
-                                <button class="add-to-cart-btn" onclick="addToCartWithSize('${product.name}', ${product.price}, '${imgSrc}', '${sizeId}')">Add To Cart</button>
+                                <button class="add-to-cart-btn" onclick="addToCartWithSize('${product.name}', ${product.price}, '${product.image}', '${sizeId}')">Add To Cart</button>
                             </div>
                         </div>
                     `;
@@ -215,6 +221,5 @@
 
         fetchCottonProducts();
     </script>
-    <script src="../cart.js"></script>
 </body>
 </html>
