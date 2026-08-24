@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Skin Care - Tahi's Artisan Alley</title>
     <link rel="stylesheet" href="../style.css">
+    <style>
+        .product-image-box img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+    </style>
 </head>
 <body>
 
@@ -37,48 +44,62 @@
     <!-- এখানে সব প্রোডাক্ট থাকবে -->
     <section class="product-section">
         <div class="product-grid" id="product-container">
-            <!-- পুরনো প্রোডাক্টগুলো -->
+            <!-- পুরনো স্ট্যাটিক প্রোডাক্টগুলো -->
             <div class="product-card">
-                <div class="product-image-box" style="background-image: url('../images/skincare-product.jpg');"></div>
+                <div class="product-image-box">
+                    <img src="../images/skincare-product.jpg" alt="Simple Refreshing Facewash">
+                </div>
                 <div class="product-info">
                     <h3>Simple Refreshing Facewash</h3>
                     <div class="price">BDT 680</div>
                     <button class="add-to-cart-btn" onclick="addToCart('Simple Refreshing Facewash', 680, '../images/skincare-product.jpg')">Add To Cart</button>
                 </div>
             </div>
+
             <div class="product-card">
-                <div class="product-image-box" style="background-image: url('../images/s1.jpg');"></div>
+                <div class="product-image-box">
+                    <img src="../images/s1.jpg" alt="Dot & Key Sunscreen">
+                </div>
                 <div class="product-info">
                     <h3>Dot & Key SPF 50+ sunscreen 80ml</h3>
                     <div class="price">BDT 999</div>
                     <button class="add-to-cart-btn" onclick="addToCart('Dot & Key SPF 50+ sunscreen 80ml', 999, '../images/s1.jpg')">Add To Cart</button>
                 </div>
             </div>
+
             <div class="product-card">
-                <div class="product-image-box" style="background-image: url('../images/s3.jpg');"></div>
+                <div class="product-image-box">
+                    <img src="../images/s3.jpg" alt="3W Clinic Sunblock">
+                </div>
                 <div class="product-info">
                     <h3>3W Clinic Intensive Sunblock</h3>
                     <div class="price">BDT 550</div>
                     <button class="add-to-cart-btn" onclick="addToCart('3W Clinic Intensive Sunblock', 550, '../images/s3.jpg')">Add To Cart</button>
                 </div>
             </div>
+
             <div class="product-card">
-                <div class="product-image-box" style="background-image: url('../images/s2.jpg');"></div>
+                <div class="product-image-box">
+                    <img src="../images/s2.jpg" alt="CERAVE Cream">
+                </div>
                 <div class="product-info">
                     <h3>CERAVE Moisturizing Cream 56ml</h3>
                     <div class="price">BDT 1,350</div>
                     <button class="add-to-cart-btn" onclick="addToCart('CERAVE Moisturizing Cream 56ml', 1350, '../images/s2.jpg')">Add To Cart</button>
                 </div>
             </div>
+
             <div class="product-card">
-                <div class="product-image-box" style="background-image: url('../images/s4.jpg');"></div>
+                <div class="product-image-box">
+                    <img src="../images/s4.jpg" alt="AXIS-Y Serum">
+                </div>
                 <div class="product-info">
                     <h3>AXIS-Y Dark spot correcting Serum</h3>
                     <div class="price">BDT 1,300</div>
                     <button class="add-to-cart-btn" onclick="addToCart('AXIS-Y Dark spot correcting Serum', 1300, '../images/s4.jpg')">Add To Cart</button>
                 </div>
             </div>
-            <!-- ডাটাবেসের নতুন প্রোডাক্টগুলো নিচে যোগ হবে -->
+            <!-- ডাটাবেসের নতুন প্রোডাক্টগুলো নিচে ডায়নামিকভাবে যোগ হবে -->
         </div>
     </section>
 
@@ -96,36 +117,53 @@
     </footer>
 
     <script>
-    
-
-    async function fetchProducts() {
-        try {
-            const res = await fetch('https://tahis-artisan-alley.onrender.com/get-products');
-            const data = await res.json();
-            const container = document.getElementById('product-container');
-            
-            data.forEach(product => {
-                if (product.category === 'skincare') {
-                    // এখানে পাথটি খেয়াল কর: '/images/${product.image}'
-                    container.innerHTML += `
-                        <div class="product-card">
-                            <div class="product-image-box" style="background-image: url('/images/${product.image}');"></div>
-                            <div class="product-info">
-                                <h3>${product.name}</h3>
-                                <div class="price">BDT ${product.price}</div>
-                                <button class="add-to-cart-btn" onclick="addToCart('${product.name}', ${product.price}, '/images/${product.image}')">Add To Cart</button>
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-        } catch (error) {
-            console.error("Fetch failed:", error);
+        // ছবির লিংক ফিল্টার করার স্মার্ট লজিক
+        function getCorrectImageUrl(image) {
+            if (!image) return 'https://via.placeholder.com/300?text=No+Image';
+            // যদি অনলাইনের লিংক হয় (http/https দিয়ে শুরু হয়)
+            if (image.startsWith('http://') || image.startsWith('https://')) {
+                return image;
+            }
+            // যদি লোকাল ফাইল নেম হয়
+            return '../images/' + image;
         }
-    }
-    fetchProducts();
-</script>
 
-<script src="../cart.js"></script>
+        async function fetchProducts() {
+            try {
+                const res = await fetch('https://tahis-artisan-alley.onrender.com/get-products');
+                const data = await res.json();
+                const container = document.getElementById('product-container');
+                
+                data.forEach(product => {
+                    if (product.category === 'skincare') {
+                        const finalImgUrl = getCorrectImageUrl(product.image);
+
+                        container.innerHTML += `
+                            <div class="product-card">
+                                <div class="product-image-box">
+                                    <img 
+                                        src="${finalImgUrl}" 
+                                        alt="${product.name}" 
+                                        referrerpolicy="no-referrer" 
+                                        onerror="this.src='https://via.placeholder.com/300?text=Image+Error';"
+                                    >
+                                </div>
+                                <div class="product-info">
+                                    <h3>${product.name}</h3>
+                                    <div class="price">BDT ${product.price}</div>
+                                    <button class="add-to-cart-btn" onclick="addToCart('${product.name}', ${product.price}, '${finalImgUrl}')">Add To Cart</button>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            } catch (error) {
+                console.error("Fetch failed:", error);
+            }
+        }
+        fetchProducts();
+    </script>
+
+    <script src="../cart.js"></script>
 </body>
 </html>
