@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping Cart - Tahi's Artisan Alley</title>
     <link rel="stylesheet" href="../style.css">
+    <style>
+        /* Checkout Modal CSS */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: #fff; padding: 25px; border-radius: 8px; width: 90%; max-width: 420px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .modal-content input { width: 100%; padding: 10px; margin: 8px 0 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .submit-btn { background: #28a745; color: white; border: none; padding: 12px; width: 100%; cursor: pointer; font-size: 16px; border-radius: 4px; font-weight: bold; }
+        .cancel-btn { background: #6c757d; color: white; border: none; padding: 10px; width: 100%; margin-top: 8px; cursor: pointer; border-radius: 4px; }
+        .remove-btn { background: #dc3545; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; }
+    </style>
 </head>
 <body>
 
@@ -48,7 +57,7 @@
                     </tr>
                 </thead>
                 <tbody id="cart-table-body">
-                    <!-- জাভাস্ক্রিপ্ট এই জায়গায় ডাটা রেন্ডার করবে -->
+                    <!-- জাভাস্ক্রিপ্ট এই জায়গায় ডাটা রেন্ডার করবে -->
                 </tbody>
             </table>
 
@@ -67,10 +76,33 @@
                     <span>Total:</span>
                     <span id="total-with-delivery">BDT 60</span>
                 </div>
-                <button class="checkout-btn">Proceed to Checkout</button>
+                <button class="checkout-btn" id="checkoutBtn">Proceed to Checkout</button>
             </div>
         </div>
     </section>
+
+    <!-- Checkout Modal Form -->
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content">
+            <h3>Checkout Details</h3>
+            <form id="orderForm">
+                <label>Full Name:</label>
+                <input type="text" id="cust-name" required placeholder="Enter your full name">
+
+                <label>Email Address:</label>
+                <input type="email" id="cust-email" required placeholder="Enter your email">
+
+                <label>Phone Number:</label>
+                <input type="tel" id="cust-phone" required placeholder="017XXXXXXXX">
+
+                <label>Delivery Address:</label>
+                <input type="text" id="cust-address" required placeholder="Full delivery address">
+
+                <button type="submit" class="submit-btn">Confirm Order</button>
+                <button type="button" class="cancel-btn" id="closeModalBtn">Cancel</button>
+            </form>
+        </div>
+    </div>
 
     <footer>
         <div class="footer-container">
@@ -85,6 +117,113 @@
         </div>
     </footer>
 
-<script src="../cart.js"></script>
+    <script>
+        // ১. LocalStorage থেকে কার্ট ডেটা রেন্ডার করা
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function renderCart() {
+            const tbody = document.getElementById('cart-table-body');
+            const subtotalEl = document.getElementById('subtotal');
+            const totalEl = document.getElementById('total-with-delivery');
+
+            tbody.innerHTML = '';
+            let subtotal = 0;
+
+            if (cart.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 20px;">Your cart is empty!</td></tr>';
+                subtotalEl.innerText = 'BDT 0';
+                totalEl.innerText = 'BDT 60';
+                return;
+            }
+
+            cart.forEach((item, index) => {
+                const itemPrice = parseFloat(item.price) || 0;
+                const itemQty = parseInt(item.quantity) || 1;
+                const itemTotal = itemPrice * itemQty;
+                subtotal += itemTotal;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><img src="${item.image || '../images/logo.png'}" alt="${item.name}" style="width: 50px; height: 50px; object-fit: cover;"></td>
+                        <td>${item.name || 'Product'}</td>
+                        <td>BDT ${itemPrice}</td>
+                        <td>${itemQty}</td>
+                        <td>BDT ${itemTotal}</td>
+                        <td><button class="remove-btn" onclick="removeItem(${index})">Remove</button></td>
+                    </tr>
+                `;
+            });
+
+            subtotalEl.innerText = `BDT ${subtotal}`;
+            totalEl.innerText = `BDT ${subtotal + 60}`;
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+        }
+
+        // ২. চেকআউট মডাল খোলা ও বন্ধ
+        const modal = document.getElementById('checkoutModal');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+
+        checkoutBtn.onclick = () => {
+            if (cart.length === 0) {
+                alert('Your cart is empty!');
+                return;
+            }
+            // লগইন করা থাকলে ইউজারের ইমেইল ফিল্ডে অটো বসে যাবে
+            const loggedInUserEmail = localStorage.getItem('userEmail') || '';
+            document.getElementById('cust-email').value = loggedInUserEmail;
+            modal.style.display = 'flex';
+        };
+
+        closeModalBtn.onclick = () => {
+            modal.style.display = 'none';
+        };
+
+        // ৩. অর্ডার ব্যাকএন্ডে সাবমিট করা (Render Server Endpoint)
+        document.getElementById('orderForm').onsubmit = async (e) => {
+            e.preventDefault();
+
+            let subtotal = cart.reduce((sum, item) => sum + ((parseFloat(item.price) || 0) * (parseInt(item.quantity) || 1)), 0);
+            let totalAmount = subtotal + 60;
+
+            // অ্যাডমিন প্যানেল ও ইউজারের ব্যাকএন্ডের চাহিদামতো সাজানো ডেটা Structure
+            const orderPayload = {
+                name: document.getElementById('cust-name').value,
+                email: document.getElementById('cust-email').value,
+                phone: document.getElementById('cust-phone').value,
+                address: document.getElementById('cust-address').value,
+                items: cart, // আসল নাম, দাম, পরিমাণ সহ পুরো অ্যারে
+                total: totalAmount,
+                date: new Date().toISOString(),
+                status: 'Pending'
+            };
+
+            try {
+                const response = await fetch('https://tahis-artisan-alley.onrender.com/place-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderPayload)
+                });
+
+                if (response.ok) {
+                    alert('Order placed successfully!');
+                    localStorage.removeItem('cart');
+                    window.location.href = '../index.html';
+                } else {
+                    alert('Failed to place order. Please try again.');
+                }
+            } catch (err) {
+                console.error("Order submission error:", err);
+                alert('Server error! Could not place order.');
+            }
+        };
+
+        renderCart();
+    </script>
 </body>
 </html>
