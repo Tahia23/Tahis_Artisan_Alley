@@ -32,13 +32,15 @@ const Product = mongoose.model('Product', new mongoose.Schema({
     image: String
 }), 'products');
 
-// ২. অর্ডার মডেল
+// ২. অর্ডার মডেল (অর্ডার স্ট্যাটাস এবং ইমেইল যুক্ত করা হয়েছে)
 const Order = mongoose.model('Order', new mongoose.Schema({
     name: String,
     phone: String,
     address: String,
     items: Array,
     total: String,
+    email: String, // কাস্টমারের ইমেইল
+    status: { type: String, default: 'Pending' }, // Pending, Accepted, Rejected
     date: { type: Date, default: Date.now }
 }), 'orders');
 
@@ -138,7 +140,7 @@ app.delete('/delete-product/:id', async (req, res) => {
     }
 });
 
-// ৪. প্রোডাক্ট এডিট/আপডেট করার নতুন Route (নূতন যোগ করা হয়েছে)
+// ৪. প্রোডাক্ট এডিট/আপডেট করার নতুন Route (নূতন যোগ করা হয়েছে)
 app.put('/edit-product/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -175,6 +177,41 @@ app.post('/place-order', async (req, res) => {
         res.status(200).json({ message: 'Order Placed!' });
     } catch (err) {
         console.error("❌ Order Error:", err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ১. অ্যাডমিনের জন্য সব অর্ডার নিয়ে আসার Route (নতুন যোগ করা হয়েছে)
+app.get('/get-orders', async (req, res) => {
+    try {
+        const orders = await Order.find().sort({ date: -1 });
+        res.status(200).json(orders);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ২. নির্দিষ্ট কাস্টমারের ইমেইল অনুযায়ী তার অর্ডার নিয়ে আসার Route (নতুন যোগ করা হয়েছে)
+app.get('/get-user-orders/:email', async (req, res) => {
+    try {
+        const orders = await Order.find({ email: req.params.email }).sort({ date: -1 });
+        res.status(200).json(orders);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ৩. অ্যাডমিন দ্বারা অর্ডার Accept / Reject করার Route (নতুন যোগ করা হয়েছে)
+app.put('/update-order-status/:id', async (req, res) => {
+    try {
+        const { status } = req.body;
+        const updatedOrder = await Order.findByIdAndUpdate(
+            req.params.id,
+            { status: status },
+            { new: true }
+        );
+        res.status(200).json({ message: `Order ${status}`, order: updatedOrder });
+    } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });

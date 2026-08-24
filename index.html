@@ -6,6 +6,16 @@
     <title>Tahi's Artisan Alley</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .my-orders-section { padding: 40px 20px; background-color: #f9f9f9; margin: 20px 0; border-radius: 8px; }
+        .orders-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #fff; }
+        .orders-table th, .orders-table td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        .orders-table th { background-color: #f4f4f4; }
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; color: white; display: inline-block; }
+        .status-pending { background-color: #ff9800; }
+        .status-accepted { background-color: #28a745; }
+        .status-rejected { background-color: #dc3545; }
+    </style>
 </head>
 <body>
 
@@ -94,6 +104,25 @@
                     </span>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- কাস্টমারের অর্ডারের তালিকা ও স্ট্যাটাস সেকশন (নতুন যোগ করা হয়েছে) -->
+    <section id="myOrdersSection" class="my-orders-section" style="display: none;">
+        <h2 style="text-align:center;">My Orders & Status</h2>
+        <div style="overflow-x:auto;">
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Items</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="user-orders-body">
+                </tbody>
+            </table>
         </div>
     </section>
 
@@ -261,11 +290,47 @@
         }
         fetchProducts();
 
-        // ৬. লগইন ও এডমিন স্টেট হ্যান্ডলিং
+        // ৬. কাস্টমারের নিজের অর্ডার ও স্ট্যাটাস লোড করা (নতুন যোগ করা হয়েছে)
+        async function fetchUserOrders(email) {
+            try {
+                const response = await fetch(`https://tahis-artisan-alley.onrender.com/get-user-orders/${encodeURIComponent(email)}`);
+                const orders = await response.json();
+                
+                if (orders && orders.length > 0) {
+                    const section = document.getElementById('myOrdersSection');
+                    const body = document.getElementById('user-orders-body');
+                    if (section) section.style.display = 'block';
+                    if (body) {
+                        body.innerHTML = '';
+                        orders.forEach(order => {
+                            let itemsText = Array.isArray(order.items)
+                                ? order.items.map(item => typeof item === 'object' ? `${item.name || 'Product'} (x${item.quantity || 1})` : item).join(', ')
+                                : order.items || 'N/A';
+
+                            const statusClass = (order.status || 'Pending').toLowerCase();
+                            const orderDate = order.date ? new Date(order.date).toLocaleDateString('bn-BD') : 'N/A';
+
+                            body.innerHTML += `
+                                <tr>
+                                    <td>${orderDate}</td>
+                                    <td>${itemsText}</td>
+                                    <td>৳${order.total}</td>
+                                    <td><span class="status-badge status-${statusClass}">${order.status || 'Pending'}</span></td>
+                                </tr>
+                            `;
+                        });
+                    }
+                }
+            } catch(err) {
+                console.error("Error fetching user orders:", err);
+            }
+        }
+
+        // ৭. লগইন ও এডমিন স্টেট হ্যান্ডলিং
         const urlParams = new URLSearchParams(window.location.search);
         const loggedEmail = urlParams.get('email');
 
-        // সাইনইন বা সাইনআপ থেকে রিডাইরেক্ট হয়ে আসলে URL থেকে ইমেইল সেভ করা
+        // সাইনইন বা সাইনআপ থেকে রিডাইরেক্ট হয়ে আসলে URL থেকে ইমেইল সেভ করা
         if ((urlParams.get('login') === 'success' || urlParams.get('signup') === 'success') && loggedEmail) {
             localStorage.setItem('userEmail', loggedEmail.toLowerCase().trim());
             localStorage.setItem('isLoggedIn', 'true');
@@ -283,11 +348,16 @@
             const ADMIN_EMAIL = 'tahiasima023@gmail.com';
 
             if (isLoggedIn === 'true') {
-                // ১. যদি ইউজারের ইমেইল এডমিন ইমেইলের সাথে মিলে যায়
+                // ১. যদি ইউজারের ইমেইল এডমিন ইমেইলের সাথে মিলে যায়
                 if (userEmail === ADMIN_EMAIL) {
                     if (adminBtn) adminBtn.style.display = 'inline-block';
                 } else {
                     if (adminBtn) adminBtn.style.display = 'none';
+                }
+
+                // লগইন থাকা অবস্থায় ইউজারের অর্ডার লোড করা
+                if (userEmail) {
+                    fetchUserOrders(userEmail);
                 }
 
                 // ২. লগইন অবস্থায় বাটন পরিবর্তন করে Sign Out দেখানো

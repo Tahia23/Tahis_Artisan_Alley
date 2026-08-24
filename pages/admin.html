@@ -11,7 +11,7 @@
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
         
-        /* এডিট ও অন্যান্য বাটনের স্টাইল */
+        /* এডিট, অ্যাকসেপ্ট ও রিজেক্ট বাটনের স্টাইল */
         .btn-edit {
             background-color: #4CAF50;
             color: white;
@@ -38,6 +38,23 @@
             border-radius: 4px;
             margin-left: 10px;
         }
+        .btn-accept {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+        .btn-reject {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
@@ -56,6 +73,7 @@
     </header>
 
     <div class="admin-container">
+        <!-- প্রোডাক্ট আপলোড ও এডিট ফর্ম -->
         <div class="form-box">
             <h2 id="form-heading">Add New Product</h2>
             <form id="productForm">
@@ -89,6 +107,26 @@
             </form>
         </div>
 
+        <!-- কাস্টমার অর্ডার টেবিল সেকশন (নতুন যোগ করা হয়েছে) -->
+        <div class="product-list-box">
+            <h2>Customer Orders</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Phone & Address</th>
+                        <th>Items & Total</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="order-body">
+                    <!-- ডাইনামিক অর্ডার ডাটা এখানে আসবে -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- বর্তমান প্রোডাক্টস টেবিল -->
         <div class="product-list-box">
             <h2>Current Products</h2>
             <table id="product-table">
@@ -139,7 +177,68 @@
         }
     }
 
-    // ২. এডিট বাটনে ক্লিক করলে ফর্মে ডেটা সেট করা
+    // ২. অর্ডার লোড করার ফাংশন (নতুন যোগ করা হয়েছে)
+    async function loadOrders() {
+        try {
+            const response = await fetch('https://tahis-artisan-alley.onrender.com/get-orders');
+            const orders = await response.json();
+            const body = document.getElementById('order-body');
+            body.innerHTML = '';
+
+            orders.forEach(order => {
+                // অর্ডার আইটেম তালিকা রূপান্তর
+                let itemsList = '';
+                if (Array.isArray(order.items)) {
+                    itemsList = order.items.map(item => typeof item === 'object' ? `${item.name || 'Product'} (x${item.quantity || 1})` : item).join(', ');
+                } else {
+                    itemsList = order.items || 'N/A';
+                }
+
+                body.innerHTML += `
+                    <tr>
+                        <td>
+                            <b>${order.name}</b><br>
+                            <small>${order.email || 'No email'}</small>
+                        </td>
+                        <td>${order.phone}<br><small>${order.address}</small></td>
+                        <td>${itemsList}<br><b>Total: ৳${order.total}</b></td>
+                        <td><b style="color: ${getStatusColor(order.status)}">${order.status || 'Pending'}</b></td>
+                        <td>
+                            <button class="btn-accept" onclick="updateOrderStatus('${order._id}', 'Accepted')">Accept</button>
+                            <button class="btn-reject" onclick="updateOrderStatus('${order._id}', 'Rejected')">Reject</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        } catch (err) {
+            console.error("Error loading orders:", err);
+        }
+    }
+
+    // স্ট্যাটাস অনুসারে টেক্সটের কালার নির্ধারণ
+    function getStatusColor(status) {
+        if (status === 'Accepted') return '#28a745';
+        if (status === 'Rejected') return '#dc3545';
+        return '#ff9800'; // Pending
+    }
+
+    // ৩. অর্ডার Accept / Reject স্ট্যাটাস আপডেট করা (নতুন যোগ করা হয়েছে)
+    async function updateOrderStatus(id, status) {
+        if(confirm(`আপনি কি এই অর্ডারটি ${status} করতে চান?`)) {
+            try {
+                await fetch(`https://tahis-artisan-alley.onrender.com/update-order-status/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status })
+                });
+                loadOrders(); 
+            } catch (err) {
+                console.error("Error updating order status:", err);
+            }
+        }
+    }
+
+    // ৪. এডিট বাটনে ক্লিক করলে ফর্মে ডেটা সেট করা
     function startEdit(id) {
         const product = globalProducts.find(p => p._id === id);
         if (!product) return;
@@ -158,7 +257,7 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // ৩. ফর্ম রিসেট করা
+    // ৫. ফর্ম রিসেট করা
     function resetForm() {
         document.getElementById('editProductId').value = '';
         document.getElementById('productForm').reset();
@@ -167,7 +266,7 @@
         document.getElementById('cancelBtn').style.display = 'none';
     }
 
-    // ৪. ডিলিট ফাংশন
+    // ৬. ডিলিট ফাংশন
     async function deleteProduct(id) {
         if(confirm("প্রোডাক্টটি ডিলিট করতে চান?")) {
             await fetch(`https://tahis-artisan-alley.onrender.com/delete-product/${id}`, { method: 'DELETE' });
@@ -175,7 +274,7 @@
         }
     }
 
-    // ৫. প্রোডাক্ট অ্যাড বা আপডেট সামলানো
+    // ৭. প্রোডাক্ট অ্যাড বা আপডেট সামলানো
     document.getElementById('productForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         
@@ -185,7 +284,7 @@
 
         // স্পেস রিমুভ করা
         productData.image = productData.image.trim();
-        delete productData.editProductId; // এই ফিল্ডটি এপিআই তে পাঠানোর প্রয়োজন নেই
+        delete productData.editProductId;
 
         const isEdit = Boolean(editId);
         const url = isEdit 
@@ -212,7 +311,9 @@
         }
     });
 
+    // পেজ লোড হবার সময় কল করা
     loadProducts(); 
+    loadOrders();
     </script>
 </body>
 </html>
