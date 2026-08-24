@@ -91,7 +91,7 @@
         </div>
     </section>
 
-    <!-- কাস্টমারের অর্ডারের ইতিহাস ও স্ট্যাটাস সেকশন (নতুন যোগ করা হয়েছে) -->
+    <!-- কাস্টমারের অর্ডারের ইতিহাস ও স্ট্যাটাস সেকশন -->
     <section id="myOrdersSection" class="my-orders-section">
         <h2 style="text-align:center; margin-bottom: 10px;">My Previous Orders & Status</h2>
         <div style="overflow-x:auto;">
@@ -167,15 +167,21 @@
             }
 
             cart.forEach((item, index) => {
-                const itemPrice = parseFloat(item.price) || 0;
-                const itemQty = parseInt(item.quantity) || 1;
+                // নাম খুঁজে বের করার সব সম্ভাব্য কি (Key) চেক
+                const itemName = item.name || item.title || item.productName || item.product_name || 'Product';
+                
+                // ছবির পাথ খুঁজে বের করার সব সম্ভাব্য কি (Key) চেক
+                const itemImg = item.image || item.img || item.productImg || item.picture || item.photo || item.src || '../images/logo.png';
+                
+                const itemPrice = parseFloat(item.price || item.productPrice) || 0;
+                const itemQty = parseInt(item.quantity || item.qty) || 1;
                 const itemTotal = itemPrice * itemQty;
                 subtotal += itemTotal;
 
                 tbody.innerHTML += `
                     <tr>
-                        <td><img src="${item.image || '../images/logo.png'}" alt="${item.name}" style="width: 50px; height: 50px; object-fit: cover;"></td>
-                        <td>${item.name || 'Product'}</td>
+                        <td><img src="${itemImg}" alt="${itemName}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
+                        <td>${itemName}</td>
                         <td>BDT ${itemPrice}</td>
                         <td>${itemQty}</td>
                         <td>BDT ${itemTotal}</td>
@@ -204,7 +210,6 @@
                 alert('Your cart is empty!');
                 return;
             }
-            // লগইন করা থাকলে ইউজারের ইমেইল ফিল্ডে অটো বসে যাবে
             const loggedInUserEmail = localStorage.getItem('userEmail') || '';
             document.getElementById('cust-email').value = loggedInUserEmail;
             modal.style.display = 'flex';
@@ -214,7 +219,7 @@
             modal.style.display = 'none';
         };
 
-        // ৩. ব্যাকএন্ড থেকে অর্ডার হিস্ট্রি ফেচ করা (নতুন যুক্ত করা হয়েছে)
+        // ৩. ব্যাকএন্ড থেকে অর্ডার হিস্ট্রি ফেচ করা
         async function fetchUserOrders() {
             const userEmail = localStorage.getItem('userEmail');
             const body = document.getElementById('user-orders-body');
@@ -237,7 +242,7 @@
                     body.innerHTML = '';
                     orders.forEach(order => {
                         let itemsText = Array.isArray(order.items)
-                            ? order.items.map(item => typeof item === 'object' ? `${item.name || 'Product'} (x${item.quantity || 1})` : item).join(', ')
+                            ? order.items.map(item => typeof item === 'object' ? `${item.name || item.title || 'Product'} (x${item.quantity || item.qty || 1})` : item).join(', ')
                             : order.items || 'N/A';
 
                         const statusClass = (order.status || 'Pending').toLowerCase();
@@ -259,22 +264,21 @@
             }
         }
 
-        // ৪. অর্ডার ব্যাকএন্ডে সাবমিট করা (Render Server Endpoint)
+        // ৪. অর্ডার ব্যাকএন্ডে সাবমিট করা
         document.getElementById('orderForm').onsubmit = async (e) => {
             e.preventDefault();
 
-            let subtotal = cart.reduce((sum, item) => sum + ((parseFloat(item.price) || 0) * (parseInt(item.quantity) || 1)), 0);
+            let subtotal = cart.reduce((sum, item) => sum + ((parseFloat(item.price || item.productPrice) || 0) * (parseInt(item.quantity || item.qty) || 1)), 0);
             let totalAmount = subtotal + 60;
 
             const userEmail = document.getElementById('cust-email').value;
 
-            // অ্যাডমিন প্যানেল ও ইউজারের ব্যাকএন্ডের চাহিদামতো সাজানো ডেটা Structure
             const orderPayload = {
                 name: document.getElementById('cust-name').value,
                 email: userEmail,
                 phone: document.getElementById('cust-phone').value,
                 address: document.getElementById('cust-address').value,
-                items: cart, // আসল নাম, দাম, পরিমাণ সহ পুরো অ্যারে
+                items: cart,
                 total: totalAmount,
                 date: new Date().toISOString(),
                 status: 'Pending'
@@ -290,15 +294,11 @@
                 if (response.ok) {
                     alert('Order placed successfully!');
                     
-                    // অর্ডারের ইমেইল LocalStorage-এ সংরক্ষণ করা যাতে হিস্ট্রি পাওয়া যায়
                     localStorage.setItem('userEmail', userEmail);
-                    
                     localStorage.removeItem('cart');
                     cart = [];
                     renderCart();
                     modal.style.display = 'none';
-                    
-                    // সাথে সাথে নতুন অর্ডারের ইতিহাস রিফ্রেশ করবে
                     fetchUserOrders();
                 } else {
                     alert('Failed to place order. Please try again.');
@@ -309,7 +309,7 @@
             }
         };
 
-        // প্রাথমিক ডাটা রেন্ডার ও হিস্ট্রি ফেস করা
+        // প্রাথমিক ডাটা রেন্ডার ও হিস্ট্রি ফেচ করা
         renderCart();
         fetchUserOrders();
     </script>
