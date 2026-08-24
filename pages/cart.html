@@ -148,6 +148,18 @@
     </footer>
 
     <script>
+        // ছবির সঠিক URL নির্ধারণ করার হেল্পার ফাংশন
+        function getCorrectImageUrl(image) {
+            if (!image) return '../images/logo.png';
+            if (image.startsWith('http://') || image.startsWith('https://')) {
+                return image;
+            }
+            if (image.startsWith('../images/')) {
+                return image;
+            }
+            return '../images/' + image;
+        }
+
         // ১. LocalStorage থেকে কার্ট ডেটা রেন্ডার করা
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
@@ -167,11 +179,10 @@
             }
 
             cart.forEach((item, index) => {
-                // নাম খুঁজে বের করার সব সম্ভাব্য কি (Key) চেক
                 const itemName = item.name || item.title || item.productName || item.product_name || 'Product';
                 
-                // ছবির পাথ খুঁজে বের করার সব সম্ভাব্য কি (Key) চেক
-                const itemImg = item.image || item.img || item.productImg || item.picture || item.photo || item.src || '../images/logo.png';
+                const rawImg = item.image || item.img || item.productImg || item.picture || item.photo || item.src;
+                const itemImg = getCorrectImageUrl(rawImg);
                 
                 const itemPrice = parseFloat(item.price || item.productPrice) || 0;
                 const itemQty = parseInt(item.quantity || item.qty) || 1;
@@ -180,7 +191,7 @@
 
                 tbody.innerHTML += `
                     <tr>
-                        <td><img src="${itemImg}" alt="${itemName}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
+                        <td><img src="${itemImg}" alt="${itemName}" referrerpolicy="no-referrer" onerror="this.src='../images/logo.png';" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
                         <td>${itemName}</td>
                         <td>BDT ${itemPrice}</td>
                         <td>${itemQty}</td>
