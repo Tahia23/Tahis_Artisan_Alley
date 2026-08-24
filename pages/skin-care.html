@@ -99,7 +99,7 @@
                     <button class="add-to-cart-btn" onclick="addToCart('AXIS-Y Dark spot correcting Serum', 1300, '../images/s4.jpg')">Add To Cart</button>
                 </div>
             </div>
-            <!-- ডাটাবেসের নতুন প্রোডাক্টগুলো নিচে ডায়নামিকভাবে যোগ হবে -->
+            <!-- ডাটাবেসের নতুন প্রোডাক্টগুলো নিচে ডায়নামিকভাবে যোগ হবে -->
         </div>
     </section>
 
@@ -117,17 +117,38 @@
     </footer>
 
     <script>
-        // ছবির লিংক ফিল্টার করার স্মার্ট লজিক
+        // ১. LocalStorage-এ কার্ট ডাটা সেভ করার সঠিক লজিক
+        function addToCart(name, price, image) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            
+            let product = {
+                name: name,
+                price: parseFloat(price),
+                image: image, // ছবির সঠিক URL/Path
+                quantity: 1
+            };
+
+            let existingIndex = cart.findIndex(item => item.name === name);
+            if (existingIndex > -1) {
+                cart[existingIndex].quantity = (cart[existingIndex].quantity || 1) + 1;
+            } else {
+                cart.push(product);
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert(name + ' added to cart!');
+        }
+
+        // ২. ছবির লিংক ফিল্টার করার স্মার্ট লজিক
         function getCorrectImageUrl(image) {
             if (!image) return 'https://via.placeholder.com/300?text=No+Image';
-            // যদি অনলাইনের লিংক হয় (http/https দিয়ে শুরু হয়)
             if (image.startsWith('http://') || image.startsWith('https://')) {
                 return image;
             }
-            // যদি লোকাল ফাইল নেম হয়
             return '../images/' + image;
         }
 
+        // ৩. ডাইনামিক প্রোডাক্ট ফেচ করা
         async function fetchProducts() {
             try {
                 const res = await fetch('https://tahis-artisan-alley.onrender.com/get-products');
@@ -163,7 +184,5 @@
         }
         fetchProducts();
     </script>
-
-    <script src="../cart.js"></script>
 </body>
 </html>
