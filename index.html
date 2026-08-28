@@ -87,6 +87,11 @@
 
             <!-- Sign In Form (Hidden by default) -->
             <form id="signInForm" action="/login" method="POST" style="display: none;">
+                <!-- ভুল পাসওয়ার্ডের জন্য লাল এরর টেক্সট -->
+                <p id="loginErrorMessage" style="color: red; font-size: 14px; margin-bottom: 10px; display: none; text-align: center; font-weight: bold;">
+                    Invalid Email or Password!
+                </p>
+
                 <label for="login-email">Email:</label>
                 <input type="email" id="login-email" name="email" required style="width: 100%; margin-bottom: 10px; padding: 8px;">
 
@@ -370,9 +375,18 @@
             }
         }
 
-        // ৮. লগইন ও এডমিন স্টেট হ্যান্ডলিং
+        // ৮. লগইন, এরর হ্যান্ডলিং ও এডমিন স্টেট
         const urlParams = new URLSearchParams(window.location.search);
         const loggedEmail = urlParams.get('email');
+
+        // ভুল পাসওয়ার্ডের জন্য এরর হ্যান্ডলার
+        if (urlParams.get('login') === 'error') {
+            if (modal) modal.style.display = "block";
+            switchTab('signin');
+            const errorMsg = document.getElementById("loginErrorMessage");
+            if (errorMsg) errorMsg.style.display = "block";
+            window.history.replaceState({}, document.title, "/");
+        }
 
         if ((urlParams.get('login') === 'success' || urlParams.get('signup') === 'success') && loggedEmail) {
             localStorage.setItem('userEmail', loggedEmail.toLowerCase().trim());

@@ -83,7 +83,7 @@ app.post('/signup', async (req, res) => {
     }
 });
 
-// Login / Sign In Route
+// Login / Sign In Route (আপডেট করা হয়েছে)
 app.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -96,7 +96,8 @@ app.post('/login', async (req, res) => {
             console.log("🔑 User Logged In:", normalizedEmail);
             res.redirect(`/?login=success&email=${encodeURIComponent(normalizedEmail)}`);
         } else {
-            res.status(401).send('<h1>Invalid Email or Password! <a href="/">Try Again</a></h1>');
+            // ভুল পাসওয়ার্ড দিলে হোমপেজে রিডাইরেক্ট করে এরর পাঠাবে
+            res.redirect('/?login=error');
         }
     } catch (err) {
         console.error("❌ Login Error:", err);
@@ -194,7 +195,7 @@ app.post('/place-order', async (req, res) => {
     }
 });
 
-// ১. অ্যাডমিনের জন্য সব অর্ডার নিয়ে আসার Route
+// ১. অ্যাডমিনের জন্য সব অর্ডার নিয়ে আসার Route
 app.get('/get-orders', async (req, res) => {
     try {
         const orders = await Order.find().sort({ date: -1 });
@@ -204,7 +205,7 @@ app.get('/get-orders', async (req, res) => {
     }
 });
 
-// ২. নির্দিষ্ট কাস্টমারের ইমেইল অনুযায়ী তার অর্ডার নিয়ে আসার Route
+// ২. নির্দিষ্ট কাস্টমারের ইমেইল অনুযায়ী তার অর্ডার নিয়ে আসার Route
 app.get('/get-user-orders/:email', async (req, res) => {
     try {
         const userEmail = req.params.email.toLowerCase().trim();
