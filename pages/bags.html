@@ -53,19 +53,7 @@
     <section class="product-section">
         <div class="product-grid" id="bags-product-grid">
             
-            <!-- ফিক্সড ব্যাগ ১ -->
-            <div class="product-card">
-                <div class="product-image-box">
-                    <img src="../images/bag-category.jpg" alt="Classic Leather Bag">
-                </div>
-                <div class="product-info">
-                    <h3>Classic Leather Bag</h3>
-                    <div class="price">BDT 1,200</div>
-                    <button class="add-to-cart-btn" onclick="addToCart('Classic Leather Bag', 1200, '../images/bag-category.jpg')">Add To Cart</button>
-                </div>
-            </div>
-
-            <!-- ফিক্সড ব্যাগ ২ -->
+            <!-- ফিক্সড ব্যাগ ১ (Handcrafted Tote Bag) -->
             <div class="product-card">
                 <div class="product-image-box">
                     <img src="../images/bag-product.jpg" alt="Handcrafted Tote Bag">
@@ -73,11 +61,11 @@
                 <div class="product-info">
                     <h3>Handcrafted Tote Bag</h3>
                     <div class="price">BDT 950</div>
-                    <button class="add-to-cart-btn" onclick="addToCart('Handcrafted Tote Bag', 950, '../images/bag-product.jpg')">Add To Cart</button>
+                    <button class="add-to-cart-btn" onclick="addToCart('Dior Leather Bag', 1950, '../images/bag-product.jpg')">Add To Cart</button>
                 </div>
             </div>
 
-            <!-- প্রিমিয়াম ব্যাগ (কালার অপশন সহ ১টি একক কার্ড) -->
+            <!-- প্রিমিয়াম ব্যাগ (শুধু ৪টি কালার ভ্যারিয়েন্ট সহ) -->
             <div class="product-card">
                 <div class="product-image-box">
                     <img id="premium-bag-img" src="../images/premium-black.jpg" alt="Premium Leather Bag">
@@ -92,8 +80,6 @@
                         <option value="blue" data-price="1650" data-img="../images/premium-blue-jean.jpg" data-name="Premium Blue Denim Bag">Blue Denim</option>
                         <option value="maroon" data-price="1750" data-img="../images/premium-maroon.jpg" data-name="Premium Maroon Velvet Bag">Maroon Velvet</option>
                         <option value="peachy" data-price="1700" data-img="../images/premium-peachy-pink.jpg" data-name="Premium Peachy Pink Bag">Peachy Pink</option>
-                        <option value="classic" data-price="1850" data-img="../images/premium-bag.jpg" data-name="Premium Collection Bag">Classic Gold</option>
-                        <option value="exclusive" data-price="2100" data-img="../images/premium.jpg" data-name="Exclusive Premium Bag">Exclusive Edition</option>
                     </select>
 
                     <div class="price" id="premium-bag-price">BDT 1,990</div>
@@ -101,7 +87,7 @@
                 </div>
             </div>
 
-            <!-- ডাটাবেস থেকে নতুন অ্যাডমিন আপলোড করা প্রোডাক্ট এখানে ডায়নামিকভাবে আসবে -->
+            <!-- ডাটাবেস থেকে নতুন ব্যাগ এখানে লোড হবে -->
         </div>
     </section>
 
@@ -119,7 +105,7 @@
     </footer>
 
     <script>
-        // ড্রপডাউন থেকে কালার পাল্টালে ইমেজ, প্রাইজ এবং কার্ট ডাটা আপডেট করার ফাংশন
+        // কালার চেঞ্জ করার ফিউশন
         function updatePremiumBag() {
             const select = document.getElementById('premium-color-select');
             const selectedOption = select.options[select.selectedIndex];
@@ -135,7 +121,7 @@
             cartBtn.setAttribute('onclick', `addToCart('${fullName}', ${price}, '${imgSrc}')`);
         }
 
-        // অনলাইন এবং লোকাল ইমেজের সঠিক পাথ নেওয়ার লজিক
+        // ইমেজের সঠিক ইউআরএল নেওয়া
         function getCorrectImageUrl(image) {
             if (!image) return 'https://via.placeholder.com/300?text=No+Image';
             if (image.startsWith('http://') || image.startsWith('https://')) {
@@ -144,7 +130,7 @@
             return '../images/' + image;
         }
 
-        // ডাটাবেস থেকে dynamic ব্যাগ প্রোডাক্ট লোড করার ফাংশন (ডুপ্লিকেট রিমুভ সহ)
+        // ডাটাবেস থেকে প্রোডাক্ট লোড ও ফিল্টারিং
         async function fetchBagProducts() {
             try {
                 const response = await fetch('https://tahis-artisan-alley.onrender.com/get-products');
@@ -154,10 +140,16 @@
                 const bagProducts = products.filter(p => p.category === 'bags' || p.category === 'bag');
 
                 bagProducts.forEach((product) => {
-                    // প্রিমিয়াম ভ্যারিয়েন্ট টাইটেল থাকলে সেগুলোকে স্কিপ করবে যেন ডুপ্লিকেট না দেখায়
                     const lowerName = product.name.toLowerCase();
-                    if (lowerName.includes('black edition') || lowerName.includes('blue denim') || 
-                        lowerName.includes('maroon velvet') || lowerName.includes('peachy pink')) {
+                    
+                    // বাদ দেওয়া অপশনগুলো ব্যাকএন্ড ডাটাবেসে থাকলেও স্ক্রিনে দেখাবে না
+                    if (lowerName.includes('black edition') || 
+                        lowerName.includes('blue denim') || 
+                        lowerName.includes('maroon velvet') || 
+                        lowerName.includes('peachy pink') || 
+                        lowerName.includes('classic leather') || 
+                        lowerName.includes('classic gold') || 
+                        lowerName.includes('exclusive premium')) {
                         return;
                     }
 
