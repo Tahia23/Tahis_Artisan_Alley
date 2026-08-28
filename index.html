@@ -39,7 +39,7 @@
             </div>
 
             <div class="search-container">
-                <!-- ১. সার্চ ইনপুটে id="searchInput" যুক্ত করা হয়েছে -->
+                <!-- ১. সার্চ ইনপুটে id="searchInput" যুক্ত করা হয়েছে -->
                 <input type="text" id="searchInput" placeholder="Search products...">
             </div>
 
@@ -376,12 +376,13 @@
             }
         }
 
-        // ৮. সার্চ করার ফাংশনালিটি (Dynamic & Static প্রোডাক্ট ফিল্টার)
+        // ৮. সার্চ করার ফাংশনালিটি (Dynamic & Static প্রোডাক্ট ফিল্টার এবং অটো-স্ক্রোল)
         const searchInput = document.getElementById('searchInput');
         if (searchInput) {
-            searchInput.addEventListener('keyup', function () {
+            searchInput.addEventListener('input', function () {
                 const filterValue = this.value.toLowerCase().trim();
                 const productCards = document.querySelectorAll('.product-card');
+                const productSection = document.querySelector('.product-section');
 
                 productCards.forEach(card => {
                     const title = card.querySelector('h3') ? card.querySelector('h3').innerText.toLowerCase() : '';
@@ -391,6 +392,10 @@
                         card.style.display = 'none';
                     }
                 });
+
+                if (filterValue.length > 0 && productSection) {
+                    productSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
             });
         }
 
