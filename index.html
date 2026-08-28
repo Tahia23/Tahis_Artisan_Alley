@@ -39,7 +39,8 @@
             </div>
 
             <div class="search-container">
-                <input type="text" placeholder="Search products...">
+                <!-- ১. সার্চ ইনপুটে id="searchInput" যুক্ত করা হয়েছে -->
+                <input type="text" id="searchInput" placeholder="Search products...">
             </div>
 
             <nav class="nav-links">
@@ -87,7 +88,7 @@
 
             <!-- Sign In Form (Hidden by default) -->
             <form id="signInForm" action="/login" method="POST" style="display: none;">
-                <!-- ভুল পাসওয়ার্ডের জন্য লাল এরর টেক্সট -->
+                <!-- ভুল পাসওয়ার্ডের জন্য লাল এরর টেক্সট -->
                 <p id="loginErrorMessage" style="color: red; font-size: 14px; margin-bottom: 10px; display: none; text-align: center; font-weight: bold;">
                     Invalid Email or Password!
                 </p>
@@ -375,11 +376,29 @@
             }
         }
 
-        // ৮. লগইন, এরর হ্যান্ডলিং ও এডমিন স্টেট
+        // ৮. সার্চ করার ফাংশনালিটি (Dynamic & Static প্রোডাক্ট ফিল্টার)
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('keyup', function () {
+                const filterValue = this.value.toLowerCase().trim();
+                const productCards = document.querySelectorAll('.product-card');
+
+                productCards.forEach(card => {
+                    const title = card.querySelector('h3') ? card.querySelector('h3').innerText.toLowerCase() : '';
+                    if (title.includes(filterValue)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // ৯. লগইন, এরর হ্যান্ডলিং ও এডমিন স্টেট
         const urlParams = new URLSearchParams(window.location.search);
         const loggedEmail = urlParams.get('email');
 
-        // ভুল পাসওয়ার্ডের জন্য এরর হ্যান্ডলার
+        // ভুল পাসওয়ার্ডের জন্য এরর হ্যান্ডলার
         if (urlParams.get('login') === 'error') {
             if (modal) modal.style.display = "block";
             switchTab('signin');
